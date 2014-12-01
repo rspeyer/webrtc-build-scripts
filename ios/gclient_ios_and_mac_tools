@@ -1,6 +1,6 @@
 solutions = [
-  { "name"        : "trunk",
-    "url"         : "https://github.com/thebehera/webrtc-mirror.git",
+  { "name"        : "src",
+    "url"         : "git@github.com:talko/webrtc-next.git",
     "deps_file"   : "DEPS",
     "managed"     : True,
     "custom_deps" : {
