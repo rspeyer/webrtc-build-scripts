@@ -42,6 +42,8 @@ create_directory_if_not_found() {
 # Installs the required dependencies on the machine
 install_dependencies() {
     sudo apt-get -y install wget git gnupg flex bison gperf build-essential zip curl subversion pkg-config
+    #Additional dependencies per http://blog.gaku.net/building-webrtc-for-android-on-mac/
+    sudo apt-get -y install libgtk2.0-dev libxtst-dev libxss-dev libudev-dev libdbus-1-dev libgconf2-dev libgnome-keyring-dev libpci-dev
     #Download the latest script to install the android dependencies for ubuntu
     curl -o install-build-deps-android.sh https://src.chromium.org/svn/trunk/src/build/install-build-deps-android.sh
     #use bash (not dash which is default) to run the script
