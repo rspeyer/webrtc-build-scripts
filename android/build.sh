@@ -88,7 +88,9 @@ pull_webrtc() {
     # Ensure our target os is correct building android
     echo Configuring gclient for Android build
 	gclient config --name=src http://webrtc.googlecode.com/svn/trunk
-	echo "target_os = ['unix', 'android']" >> .gclient
+	
+    #echo "target_os = ['unix', 'android']" >> .gclient
+    cp ${PROJECT_ROOT}/gclient_android_and_unix_tools .gclient
 
     # Get latest webrtc source
 	echo Pull down the latest from the webrtc repo

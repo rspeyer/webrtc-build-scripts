@@ -1,0 +1,13 @@
+solutions = [
+  { "name"        : "src",
+    "url"         : "git@github.com:talko/webrtc-next.git",
+    "deps_file"   : "DEPS",
+    "managed"     : True,
+    "custom_deps" : {
+    },
+    "safesync_url": "",
+  }
+]
+ 
+cache_dir = None
+target_os=['unix', 'android']
