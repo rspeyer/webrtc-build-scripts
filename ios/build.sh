@@ -58,10 +58,18 @@ function pull_depot_tools() {
     cd $WORKING_DIR
 }
 
+function choose_code_signing() {
+    security find-identity -v
+    echo "Please select your code signing identity index from the above list:"
+    read INDEX
+    IDENTITY=`security find-identity -v | awk -v i=$INDEX -F ") |\"" '{if (i==$1) {print $3}}'`
+    sed -i -e "s/\'CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\': \'iPhone Developer\',/\'CODE_SIGN_IDENTITY[sdk=iphoneos*]\': \'$IDENTITY\',/" $WEBRTC/src/build/common.gypi
+}
+
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
     export GYP_DEFINES="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1"
-    export GYP_GENERATORS="ninja,xcode"
+    export GYP_GENERATORS="ninja,xcode-ninja"
 }
 
 # Add the iOS Device specific defines on top of the base
@@ -150,7 +158,6 @@ function update2Revision() {
 # This function cleans out your webrtc directory and does a fresh clone -- slower than a pull
 # Pass in a revision number as an argument to clone that specific revision ex: clone 6798
 function clone() {
-
     DIR=`pwd`
 
     rm -rf $WEBRTC
@@ -359,6 +366,7 @@ function get_webrtc() {
 # Build webrtc for an ios device and simulator, then create a universal library
 function build_webrtc() {
     pull_depot_tools
+    choose_code_signing
     build_apprtc
     if [ "$ARM64" = true ] ; then
         build_apprtc_arm64
