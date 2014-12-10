@@ -176,7 +176,7 @@ function clone() {
 # Fire the sync command. Accepts an argument as the revision number that you want to sync to
 function sync() {
     pull_depot_tools
-    cd $WEBRTC
+    pushd $WEBRTC >/dev/null
     choose_code_signing
     if [ -z $1 ]
     then
@@ -184,6 +184,7 @@ function sync() {
     else
         gclient sync -r "$1" || true
     fi
+    popd >/dev/null
 }
 
 # Convenience function to copy the headers by creating a symbolic link to the headers directory deep within webrtc src
@@ -195,7 +196,7 @@ function copy_headers() {
 }
 
 function build_webrtc_mac() {
-    cd "$WEBRTC/src"
+    pushd "$WEBRTC/src" >/dev/null
 
     wrMac64
     choose_code_signing
@@ -213,11 +214,12 @@ function build_webrtc_mac() {
         ninja -C "out_ios_x86/Release/" AppRTCDemo
         libtool -static -o "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a" $WEBRTC/src/out_ios_x86/Release/*.a
     fi
+    popd >/dev/null
 }
 
 # Build AppRTC Demo for the simulator (ia32 architecture)
 function build_apprtc_sim() {
-    cd "$WEBRTC/src"
+    pushd "$WEBRTC/src" >/dev/null
 
     wrX86
     choose_code_signing
@@ -240,11 +242,12 @@ function build_apprtc_sim() {
         ninja -C "out_ios_x86/Release-iphonesimulator/" AppRTCDemo
         libtool -static -o "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a" $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
     fi
+    popd >/dev/null
 }
 
 # Build AppRTC Demo for a real device
 function build_apprtc() {
-    cd "$WEBRTC/src"
+    pushd "$WEBRTC/src" >/dev/null
     
     wrios_armv7
     choose_code_signing
@@ -267,12 +270,13 @@ function build_apprtc() {
         ninja -C "out_ios_armeabi_v7a/Release-iphoneos/" AppRTCDemo
         libtool -static -o "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a" $WEBRTC/src/out_ios_armeabi_v7a/Release-iphoneos/*.a
     fi
+    popd >/dev/null
 }
 
 
 # Build AppRTC Demo for an armv7 real device
 function build_apprtc_arm64() {
-    cd "$WEBRTC/src"
+    pushd "$WEBRTC/src" >/dev/null
     
     wrios_armv8
     choose_code_signing
@@ -295,6 +299,7 @@ function build_apprtc_arm64() {
         ninja -C "out_ios_arm64_v8a/Release-iphoneos/" AppRTCDemo
         libtool -static -o "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a" $WEBRTC/src/out_ios_arm64_v8a/Release-iphoneos/*.a
     fi
+    popd >/dev/null
 }
 
 # This function is used to put together the intel (simulator), armv7 and arm64 builds (device) into one static library so its easy to deal with in Xcode
