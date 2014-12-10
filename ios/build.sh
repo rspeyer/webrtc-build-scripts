@@ -59,10 +59,13 @@ function pull_depot_tools() {
 }
 
 function choose_code_signing() {
-    security find-identity -v
-    echo "Please select your code signing identity index from the above list:"
-    read INDEX
-    IDENTITY=`security find-identity -v | awk -v i=$INDEX -F ") |\"" '{if (i==$1) {print $3}}'`
+    if [[ -z $IDENTITY ]]
+    then
+        security find-identity -v
+        echo "Please select your code signing identity index from the above list:"
+        read INDEX
+        IDENTITY=`security find-identity -v | awk -v i=$INDEX -F ") |\"" '{if (i==$1) {print $3}}'`
+    fi
     sed -i -e "s/\'CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\': \'iPhone Developer\',/\'CODE_SIGN_IDENTITY[sdk=iphoneos*]\': \'$IDENTITY\',/" $WEBRTC/src/build/common.gypi
 }
 
@@ -174,6 +177,7 @@ function clone() {
 function sync() {
     pull_depot_tools
     cd $WEBRTC
+    choose_code_signing
     if [ -z $1 ]
     then
         gclient sync || true
@@ -194,6 +198,7 @@ function build_webrtc_mac() {
     cd "$WEBRTC/src"
 
     wrMac64
+    choose_code_signing
     gclient runhooks
 
     copy_headers
@@ -215,6 +220,7 @@ function build_apprtc_sim() {
     cd "$WEBRTC/src"
 
     wrX86
+    choose_code_signing
     gclient runhooks
 
     copy_headers
@@ -241,6 +247,7 @@ function build_apprtc() {
     cd "$WEBRTC/src"
     
     wrios_armv7
+    choose_code_signing
     gclient runhooks
 
     copy_headers
@@ -268,6 +275,7 @@ function build_apprtc_arm64() {
     cd "$WEBRTC/src"
     
     wrios_armv8
+    choose_code_signing
     gclient runhooks
 
     copy_headers
@@ -358,13 +366,11 @@ function get_webrtc() {
 # Build webrtc for an ios device and simulator, then create a universal library
 function build_webrtc() {
     pull_depot_tools
-    choose_code_signing
     build_apprtc
     build_apprtc_arm64
     build_apprtc_sim
     lipo_intel_and_arm
 }
-
 
 # Get webrtc then build webrtc
 function dance() {
