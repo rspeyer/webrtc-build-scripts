@@ -111,8 +111,12 @@ function wrMac64() {
 
 # Gets the revision number of the current WebRTC svn repo on the filesystem
 function get_revision_number() {
+    pushd $WEBRTC/src >/dev/null
+    git rev-parse HEAD
+    popd >/dev/null
+
 #    git describe --tags  | sed 's/r\([0-9]*\)-.*/\1/' #Here's a nice little git version if you are using a git source
-    svn info $WEBRTC/src | awk '{ if ($1 ~ /Revision/) { print $2 } }'
+    #svn info $WEBRTC/src | awk '{ if ($1 ~ /Revision/) { print $2 } }'
 }
 
 # This function allows you to pull the latest changes from WebRTC without doing an entire clone, much faster to build and try changes
