@@ -370,6 +370,8 @@ function get_webrtc() {
 
 # Build webrtc for an ios device and simulator, then create a universal library
 function build_webrtc() {
+    WEBRTC_DEBUG=true
+    WEBRTC_RELEASE=true
     pull_depot_tools
     build_apprtc
     build_apprtc_arm64
