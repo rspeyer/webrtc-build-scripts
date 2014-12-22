@@ -29,7 +29,6 @@ function create_directory_if_not_found() {
 
 create_directory_if_not_found "$PROJECT_DIR"
 create_directory_if_not_found "$WEBRTC"
-create_directory_if_not_found "$WEBRTC/WebRTC"
 
 function exec_libtool() {
   echo "Running libtool"
