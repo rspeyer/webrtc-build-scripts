@@ -384,12 +384,21 @@ function get_webrtc() {
 
 # Build webrtc for an ios device and simulator, then create a universal library
 function build_webrtc() {
+    # Default to DEBUG and RELEASE
     WEBRTC_DEBUG=true
     WEBRTC_RELEASE=true
+
     pull_depot_tools
+
+    # Clean BUILD folder
+    rm ${BUILD}/*
+
+    # Build
     build_apprtc
     build_apprtc_arm64
     build_apprtc_sim
+
+    # Create Universal Binary
     lipo_intel_and_arm
 }
 
