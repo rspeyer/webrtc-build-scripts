@@ -60,5 +60,5 @@ ${BASE_DIR}/ios/build_webrtc.sh
 SRC_DIR=${BASE_DIR}/ios/webrtc
 DST_DIR=${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc
 
-cp ${SRC_DIR}/libWebRTC-Universal-${BUILD}.a ${DST_DIR}/libWebRTC.a
-cp ${SRC_DIR}/libWebRTC-Universal-${BUILD}.version ${DST_DIR}/libWebRTC.version
+cp -v ${SRC_DIR}/libWebRTC-Universal-${BUILD}.a ${DST_DIR}/libWebRTC.a
+cp -v ${SRC_DIR}/libWebRTC-Universal-${BUILD}.version ${DST_DIR}/libWebRTC.version
