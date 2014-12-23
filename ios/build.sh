@@ -321,52 +321,32 @@ function build_apprtc_arm64() {
 function lipo_intel_and_arm() {
     WEBRTC_REVISION=`get_revision_number`
     if [ "$WEBRTC_DEBUG" = true ] ; then
-        # Directories to use for lipo, armv7 as default
-        LIPO_DIRS="$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Debug.a"
-        #Add ARM64
-        LIPO_DIRS="$LIPO_DIRS $BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Debug.a"
-        # Lipo the simulator build with the ios build into a universal library
+        # Directories to use for lipo, armv7 and arm64 as default
+        LIPO_DIRS="$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Debug.a $BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Debug.a"
+        # Lipo the build together into a universal library
         lipo -create $LIPO_DIRS -output $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Debug.a
         # Delete the latest symbolic link just in case :)
-        rm $WEBRTC/libWebRTC-LATEST-Universal-Debug.a || true
+        rm $WEBRTC/libWebRTC-Universal-Debug.a || true
         # Create a symbolic link pointing to the exact revision that is the latest. This way I don't have to change the xcode project file every time we update the revision number, while still keeping it easy to track which revision you are on
-        ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Debug.a $WEBRTC/libWebRTC-LATEST-Universal-Debug.a
+        ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Debug.a $WEBRTC/libWebRTC-Universal-Debug.a
         # Make it clear which revision you are using .... You don't want to get in the state where you don't know which revision you were using... trust me
-        echo "The libWebRTC-LATEST-Universal-Debug.a in this same directory, is revision " > $WEBRTC/libWebRTC-LATEST-Universal-Debug.a.version.txt
-        # Also write to a file for funzies
-        echo $WEBRTC_REVISION >> $WEBRTC/libWebRTC-LATEST-Universal-Debug.a.version.txt
-
-        # Write the version down to a file
-        echo "Architectures Built" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Debug.a.version.txt
-        echo "armv7 - Arm x86" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Debug.a.version.txt
-        echo "arm64_v8a - Arm 64 (armv8)" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Debug.a.version.txt
+        echo $WEBRTC_REVISION > $WEBRTC/libWebRTC-Universal-Debug.version
     fi
 
     if [ "$WEBRTC_PROFILE" = true ] ; then
-        LIPO_DIRS="$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Profile.a"
-        #Arm64 addition
-        LIPO_DIRS="$LIPO_DIRS $BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Profile.a"
+        LIPO_DIRS="$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Profile.a $BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Profile.a"
         lipo -create $LIPO_DIRS -output $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Profile.a
-        rm $WEBRTC/libWebRTC-LATEST-Universal-Profile.a || true
-        ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Profile.a $WEBRTC/libWebRTC-LATEST-Universal-Profile.a
-        echo "The libWebRTC-LATEST-Universal-Profile.a in this same directory, is revision " > $WEBRTC/libWebRTC-LATEST-Universal-Profile.a.version.txt
-        echo $WEBRTC_REVISION >> $WEBRTC/libWebRTC-LATEST-Universal-Profile.a.version.txt
-        echo "Architectures Built" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Profile.a.version.txt
-        echo "armv7 - Arm x86" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Profile.a.version.txt
-        echo "arm64_v8a - Arm 64 (armv8)" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Profile.a.version.txt
+        rm $WEBRTC/libWebRTC-Universal-Profile.a || true
+        ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Profile.a $WEBRTC/libWebRTC-Universal-Profile.a
+        echo $WEBRTC_REVISION > $WEBRTC/libWebRTC-Universal-Profile.version
     fi
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
-        LIPO_DIRS="$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a"
-        LIPO_DIRS="$LIPO_DIRS $BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a"
+        LIPO_DIRS="$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a $BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a"
         lipo -create $LIPO_DIRS -output $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a
-        rm $WEBRTC/libWebRTC-LATEST-Universal-Release.a || true
-        ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a $WEBRTC/libWebRTC-LATEST-Universal-Release.a
-        echo "The libWebRTC-LATEST-Universal-Release.a in this same directory, is revision " > $WEBRTC/libWebRTC-LATEST-Universal-Release.a.version.txt
-        echo $WEBRTC_REVISION >> $WEBRTC/libWebRTC-LATEST-Universal-Release.a.version.txt
-        echo "Architectures Built" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a.version.txt
-        echo "armv7 - Arm x86" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a.version.txt
-        echo "arm64_v8a - Arm 64 (armv8)" >> $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a.version.txt
+        rm $WEBRTC/libWebRTC-Universal-Release.a || true
+        ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a $WEBRTC/libWebRTC-Universal-Release.a
+        echo $WEBRTC_REVISION > $WEBRTC/libWebRTC-Universal-Release.version
     fi
 }
 
