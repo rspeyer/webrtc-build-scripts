@@ -57,5 +57,8 @@ popd >/dev/null
 ${BASE_DIR}/ios/build_webrtc.sh
 
 # 3. "Deploy" Code
-cp ${BASE_DIR}/ios/webrtc/libWebRTC-Universal-${BUILD}.a ${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc/libWebRTC.a
-cp ${BASE_DIR}/ios/webrtc/libWebRTC-Universal-${BUILD}.version ${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc/libWebRTC.version
+SRC_DIR=${BASE_DIR}/ios/webrtc
+DST_DIR=${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc
+
+cp ${SRC_DIR}/libWebRTC-Universal-${BUILD}.a ${DST_DIR}/libWebRTC.a
+cp ${SRC_DIR}/libWebRTC-Universal-${BUILD}.version ${DST_DIR}/libWebRTC.version
