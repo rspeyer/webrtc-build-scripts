@@ -84,6 +84,10 @@ function choose_code_signing() {
     sed -i -e "s/\'CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\': \'iPhone Developer\',/\'CODE_SIGN_IDENTITY[sdk=iphoneos*]\': \'$IDENTITY\',/" $WEBRTC/src/build/common.gypi
 }
 
+function enable_rtti() {
+  sed -i -e "s/\'GCC_ENABLE_CPP_RTTI\': \'NO\'/'GCC_ENABLE_CPP_RTTI\': \'YES\'/" $WEBRTC/src/build/common.gypi
+}
+
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
     export GYP_DEFINES="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1"
@@ -193,6 +197,7 @@ function sync() {
     pull_depot_tools
     pushd $WEBRTC >/dev/null
     choose_code_signing
+    enable_rtti
     if [ -z $1 ]
     then
         gclient sync || true
@@ -215,6 +220,7 @@ function build_webrtc_mac() {
 
     wrMac64
     choose_code_signing
+    enable_rtti
     gclient runhooks
 
     copy_headers
@@ -239,6 +245,7 @@ function build_apprtc_sim() {
 
     wrX86
     choose_code_signing
+    enable_rtti
     gclient runhooks
 
     copy_headers
@@ -268,6 +275,7 @@ function build_apprtc() {
 
     wrios_armv7
     choose_code_signing
+    enable_rtti
     gclient runhooks
 
     copy_headers
@@ -298,6 +306,7 @@ function build_apprtc_arm64() {
 
     wrios_armv8
     choose_code_signing
+    enable_rtti
     gclient runhooks
 
     copy_headers
