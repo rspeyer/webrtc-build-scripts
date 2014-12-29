@@ -264,12 +264,12 @@ function build_apprtc_sim() {
     fi
 
     if [ "$WEBRTC_PROFILE" = true ] ; then
-        exec_ninja -C "out_ios_x86/Profile-iphonesimulator/"
+        exec_ninja "out_ios_x86/Profile-iphonesimulator/"
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Profile.a" $WEBRTC/src/out_ios_x86/Profile-iphonesimulator/*.a
     fi
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
-        exec_ninja -C "out_ios_x86/Release-iphonesimulator/"
+        exec_ninja "out_ios_x86/Release-iphonesimulator/"
         exec_strip $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a" $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
     fi
