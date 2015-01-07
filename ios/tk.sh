@@ -11,6 +11,7 @@ function usage {
   echo "Usage: $0" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug|Profile]" >&2
+  echo "        [--clean]" >&2
   echo "        [--copy-only]" >&2
 }
 
@@ -25,6 +26,9 @@ do
     --build)
     BUILD=$2
     shift
+    ;;
+    --clean)
+    CLEAN=YES
     ;;
     --copy-only)
     COPYONLY=YES
@@ -62,7 +66,13 @@ then
   git checkout ${BRANCH}
   popd >/dev/null
 
-  # 2. Build Code
+  # 2. Clean intermediates if requested
+  if [ ! -z "${CLEAN+x}" ]
+  then
+    rm -rf ${BASE_DIR}/ios/webrtc/src/out_ios*
+  fi
+  
+  # 3. Build Code
   if [ ! -z "${APPLEINDEX+x}" ]
   then
     ${BASE_DIR}/ios/build_webrtc.sh <<< $APPLEINDEX
@@ -71,7 +81,7 @@ then
   fi
 fi
 
-# 3. "Deploy" Code
+# 4. "Deploy" Code
 SRC_DIR=${BASE_DIR}/ios/webrtc
 DST_DIR=${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc
 
