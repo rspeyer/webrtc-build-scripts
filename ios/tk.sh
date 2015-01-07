@@ -1,4 +1,11 @@
 #!/bin/bash
+
+#  tk.sh
+#  WebRTC
+#
+#  Created by Richard Speyer on 1/7/15.
+#  Copyright (c) 2015 Talko, Inc. All rights reserved.
+
 set -e
 set -u
 

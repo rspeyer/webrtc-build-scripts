@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #  build.sh
 #  WebRTC
@@ -193,8 +193,6 @@ function update2Revision() {
 # This function cleans out your webrtc directory and does a fresh clone -- slower than a pull
 # Pass in a revision number as an argument to clone that specific revision ex: clone 6798
 function clone() {
-    DIR=`pwd`
-
     if [ -d $WEBRTC ]
     then
         rm -rf $WEBRTC
