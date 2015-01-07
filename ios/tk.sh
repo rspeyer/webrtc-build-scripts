@@ -5,7 +5,6 @@ set -u
 BASE_DIR=${HOME}/dev/webrtc-build-scripts
 BRANCH=develop
 BUILD=Release
-COPYONLY=
 
 function usage {
   echo $1 >&2
@@ -53,7 +52,7 @@ case $# in
   ;;
 esac
 
-if [ -z $COPYONLY ]
+if [ -z "${COPYONLY+x}" ]
 then
   # 1. Update Code
   pushd ${BASE_DIR}/ios/webrtc/src >/dev/null
@@ -64,7 +63,12 @@ then
   popd >/dev/null
 
   # 2. Build Code
-  ${BASE_DIR}/ios/build_webrtc.sh
+  if [ ! -z "${APPLEINDEX+x}" ]
+  then
+    ${BASE_DIR}/ios/build_webrtc.sh <<< $APPLEINDEX
+  else
+    ${BASE_DIR}/ios/build_webrtc.sh
+  fi
 fi
 
 # 3. "Deploy" Code
