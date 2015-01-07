@@ -5,6 +5,8 @@
 #
 #  Created by Rahul Behera on 6/18/14.
 #  Copyright (c) 2014 Pristine, Inc. All rights reserved.
+set -e
+set -u 
 
 # Get location of the script itself .. thanks SO ! http://stackoverflow.com/a/246128
 SOURCE="${BASH_SOURCE[0]}"
@@ -74,7 +76,7 @@ function pull_depot_tools() {
 }
 
 function choose_code_signing() {
-    if [[ -z $IDENTITY ]]
+    if [ -z "${IDENTITY+x}" ]
     then
         COUNT=$(security find-identity -v | grep -c "iPhone Developer")
         if [[ $COUNT -gt 1 ]]
@@ -193,7 +195,10 @@ function update2Revision() {
 function clone() {
     DIR=`pwd`
 
-    rm -rf $WEBRTC
+    if [ -d $WEBRTC ]
+    then
+        rm -rf $WEBRTC
+    fi
     mkdir -v $WEBRTC
 
     update2Revision "$1"
@@ -387,7 +392,7 @@ function build_webrtc() {
     pull_depot_tools
 
     # Clean BUILD folder
-    rm ${BUILD}/*
+    rm -rf ${BUILD}/*
 
     # Build
     build_apprtc
