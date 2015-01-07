@@ -60,10 +60,9 @@ if [ -z "${COPYONLY+x}" ]
 then
   # 1. Update Code
   pushd ${BASE_DIR}/ios/webrtc/src >/dev/null
-  git checkout master
-  git branch -D ${BRANCH}
-  git pulls
+  git fetch
   git checkout ${BRANCH}
+  git reset --hard origin/${BRANCH}
   popd >/dev/null
 
   # 2. Clean intermediates if requested
