@@ -97,7 +97,7 @@ function enable_rtti() {
 
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
-    export GYP_DEFINES_BASE="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1"
+    export GYP_DEFINES_BASE="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 use_system_libcxx=1"
     export GYP_GENERATORS="ninja,xcode-ninja"
 }
 
@@ -240,8 +240,8 @@ function build_webrtc_mac() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_mac_x86_64/Release/"
+        exec_strip $WEBRTC/src/out_mac_x86_64/Release/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a" $WEBRTC/src/out_mac_x86_64/Release/*.a
-        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a"
     fi
     popd >/dev/null
 }
@@ -270,8 +270,8 @@ function build_apprtc_sim() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_ios_x86/Release-iphonesimulator/"
+        exec_strip $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a" $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
-        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a"
     fi
     popd >/dev/null
 }
@@ -300,8 +300,8 @@ function build_apprtc() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_ios_armeabi_v7a/Release-iphoneos/"
+        exec_strip $WEBRTC/src/out_ios_armeabi_v7a/Release-iphoneos/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a" $WEBRTC/src/out_ios_armeabi_v7a/Release-iphoneos/*.a
-        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a"
     fi
     popd >/dev/null
 }
@@ -331,8 +331,8 @@ function build_apprtc_arm64() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_ios_arm64_v8a/Release-iphoneos/"
+        exec_strip $WEBRTC/src/out_ios_arm64_v8a/Release-iphoneos/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a" $WEBRTC/src/out_ios_arm64_v8a/Release-iphoneos/*.a
-        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a"
     fi
     popd >/dev/null
 }
