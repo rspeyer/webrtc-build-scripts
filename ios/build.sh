@@ -82,9 +82,9 @@ function choose_code_signing() {
           security find-identity -v
           echo "Please select your code signing identity index from the above list:"
           read INDEX
-          IDENTITY=$(security find-identity -v | awk -v i=$INDEX -F ") |\"" '{if (i==$1) {print $3}}')
+          IDENTITY=$(security find-identity -v | awk -v i=$INDEX -F "\) |\"" '{if (i==$1) {print $3}}')
         else
-          IDENTITY=$(security find-identity -v | grep "iPhone Developer" | awk -F ") |\"" '{print $3}')
+          IDENTITY=$(security find-identity -v | grep "iPhone Developer" | awk -F "\) |\"" '{print $3}')
         fi
         echo Using code signing identity $IDENTITY
     fi
@@ -239,9 +239,9 @@ function build_webrtc_mac() {
     fi
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
-        exec_ninja "out_ios_x86/Release/"
-        exec_strip $WEBRTC/src/out_ios_x86/Release/*.a
-        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a" $WEBRTC/src/out_ios_x86/Release/*.a
+        exec_ninja "out_mac_x86_64/Release/"
+        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a" $WEBRTC/src/out_mac_x86_64/Release/*.a
+        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a"
     fi
     popd >/dev/null
 }
@@ -270,8 +270,8 @@ function build_apprtc_sim() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_ios_x86/Release-iphonesimulator/"
-        exec_strip $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a" $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
+        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a"
     fi
     popd >/dev/null
 }
@@ -300,8 +300,8 @@ function build_apprtc() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_ios_armeabi_v7a/Release-iphoneos/"
-        exec_strip $WEBRTC/src/out_ios_armeabi_v7a/Release-iphoneos/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a" $WEBRTC/src/out_ios_armeabi_v7a/Release-iphoneos/*.a
+        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-armeabi_v7a-Release.a"
     fi
     popd >/dev/null
 }
@@ -331,8 +331,8 @@ function build_apprtc_arm64() {
 
     if [ "$WEBRTC_RELEASE" = true ] ; then
         exec_ninja "out_ios_arm64_v8a/Release-iphoneos/"
-        exec_strip $WEBRTC/src/out_ios_arm64_v8a/Release-iphoneos/*.a
         exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a" $WEBRTC/src/out_ios_arm64_v8a/Release-iphoneos/*.a
+        exec_strip "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-arm64_v8a-Release.a"
     fi
     popd >/dev/null
 }
@@ -411,7 +411,7 @@ function dance() {
     if [ "$BUILD_DEBUG" = true ] ; then
         WEBRTC_DEBUG=true
     fi
-
+    
 
     get_webrtc
     build_webrtc
