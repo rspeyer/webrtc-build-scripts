@@ -1,13 +1,18 @@
 #!/bin/bash
+set -e
+set -u
+
 BASE_DIR=${HOME}/dev/webrtc-build-scripts
 BRANCH=develop
 BUILD=Release
+COPYONLY=
 
 function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug|Profile]" >&2
+  echo "        [--copy-only]" >&2
 }
 
 # 0. Parse arguments
@@ -21,6 +26,9 @@ do
     --build)
     BUILD=$2
     shift
+    ;;
+    --copy-only)
+    COPYONLY=YES
     ;;
     --help)
     usage "Build and deploy WebRTC binary for iOS into talko_ios project"
@@ -45,16 +53,19 @@ case $# in
   ;;
 esac
 
-# 1. Update Code
-pushd ${BASE_DIR}/ios/webrtc/src >/dev/null
-git checkout master
-git branch -D ${BRANCH}
-git pulls
-git checkout ${BRANCH}
-popd >/dev/null
+if [ -z $COPYONLY ]
+then
+  # 1. Update Code
+  pushd ${BASE_DIR}/ios/webrtc/src >/dev/null
+  git checkout master
+  git branch -D ${BRANCH}
+  git pulls
+  git checkout ${BRANCH}
+  popd >/dev/null
 
-# 2. Build Code
-${BASE_DIR}/ios/build_webrtc.sh
+  # 2. Build Code
+  ${BASE_DIR}/ios/build_webrtc.sh
+fi
 
 # 3. "Deploy" Code
 SRC_DIR=${BASE_DIR}/ios/webrtc
