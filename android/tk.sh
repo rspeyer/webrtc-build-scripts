@@ -74,7 +74,7 @@ then
   # 2. Clean intermediates if requested
   if [ ! -z "${CLEAN+x}" ]
   then
-    rm -rf ${BASE_DIR}/ios/webrtc/src/out_android*
+    rm -rf ${BASE_DIR}/android/webrtc/src/out_android*
   fi
 
   # 3. Build Code
