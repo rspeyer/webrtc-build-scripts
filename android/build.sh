@@ -1,4 +1,5 @@
-# !/bin/bash
+#!/bin/bash
+
 # Copyright Pristine Inc 
 # Author: Rahul Behera <rahul@pristine.io>
 # Author: Aaron Alaniz <aaron@pristine.io>
@@ -7,18 +8,11 @@
 # Builds the android peer connection library
 
 # Set your environment how you want
-if [ -n  "$VAGRANT_MACHINE" ];
+if [ ! -z "${VAGRANT_MACHINE+x}" ]
     then
     PROJECT_ROOT="/vagrant"
 else
-    # Get location of the script itself .. thanks SO ! http://stackoverflow.com/a/246128
-    SOURCE="${BASH_SOURCE[0]}"
-    while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-        SOURCE="$(readlink "$SOURCE")"
-        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-    done
-    PROJECT_ROOT="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    PROJECT_ROOT=$(dirname $0)
 fi
 
 DEPOT_TOOLS="$PROJECT_ROOT/depot_tools"
