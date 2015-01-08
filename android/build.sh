@@ -206,7 +206,6 @@ execute_build() {
         TARGET_DIR="$BUILD/$BUILD_TYPE"
         create_directory_if_not_found "$TARGET_DIR"
         
-        rm "$TARGET_DIR/$REVISION_NUM.zip" || true
         create_directory_if_not_found "$TARGET_DIR/libs/"
         create_directory_if_not_found "$TARGET_DIR/jniLibs/"
 
@@ -230,11 +229,8 @@ execute_build() {
         fi
 
         cd $TARGET_DIR
-        mkdir res # make resources directory
-
-        zip -r "$TARGET_DIR/$REVISION_NUM.zip" .
-        cd $WORKING_DIR
-
+        mkdir -p res
+        zip -r "$TARGET_DIR/libWebRTC.zip" .
         
         echo $REVISION_NUM > libWebRTC-$BUILD_TYPE.version
         echo "$BUILD_TYPE build for apprtc complete for revision $REVISION_NUM"
