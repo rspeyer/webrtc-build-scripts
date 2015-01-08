@@ -171,6 +171,7 @@ execute_build() {
     pushd "$WEBRTC_ROOT/src" >/dev/null
 
     echo Run gclient hooks
+    prepare_gyp_defines
     gclient runhooks
 
     if [ "$WEBRTC_ARCH" = "x86" ] ;
@@ -259,22 +260,29 @@ get_webrtc() {
     pull_webrtc $1
 }
 
-# Updates webrtc and builds apprtc
-build_apprtc() {
+build_webrtc_all() {
     export WEBRTC_ARCH=armv7
-    prepare_gyp_defines &&
     execute_build
 
-    # Uncomment once the application can successfully build for arm64
-    #export WEBRTC_ARCH=armv8
-    #prepare_gyp_defines &&
-    #execute_build
-
-    export WEBRTC_ARCH=x86
-    prepare_gyp_defines &&
+    export WEBRTC_ARCH=armv8
     execute_build
 
-    export WEBRTC_ARCH=x86_64
-    prepare_gyp_defines &&
-    execute_build
+#    export WEBRTC_ARCH=x86
+#    execute_build
+
+#    export WEBRTC_ARCH=x86_64
+#    execute_build
+}
+
+build_webrtc() {
+    pull_depot_tools
+    
+    # Clean BUILD folder
+    rm -rf ${BUILD}/*
+
+    WEBRTC_DEBUG=true
+    build_webrtc_all
+
+    WEBRTC_DEBUG=false
+    build_webrtc_all
 }
