@@ -22,6 +22,10 @@ DEPOT_TOOLS="$PROJECT_DIR/depot_tools"
 BUILD="$WEBRTC/libjingle_peerconnection_builds"
 WEBRTC_TARGET="AppRTCDemo"
 
+WEBRTC_RELEASE=
+WEBRTC_DEBUG=
+WEBRTC_PROFILE=
+
 function create_directory_if_not_found() {
     if [ ! -d "$1" ];
     then
