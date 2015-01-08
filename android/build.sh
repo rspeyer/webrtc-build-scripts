@@ -22,14 +22,10 @@ WEBRTC_TARGET="AppRTCDemo"
 
 ANDROID_TOOLCHAINS="$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains"
 
-# Utility method for creating a directory
 create_directory_if_not_found() {
-	# if we cannot find the directory
 	if [ ! -d "$1" ];
-		then
-		echo "$1 directory not found, creating..."
+	then
 	    mkdir -p "$1"
-	    echo "directory created at $1"
 	fi
 }
 
@@ -121,7 +117,6 @@ function wrarmv7() {
     export GYP_DEFINES="$GYP_DEFINES OS=android"
     export GYP_GENERATOR_FLAGS="$GYP_GENERATOR_FLAGS output_dir=out_android_armeabi_v7a"
     export GYP_CROSSCOMPILE=1
-    echo "ARMv7 with Neon Build"
 }
 
 # Arm 64
@@ -130,7 +125,6 @@ function wrarmv8() {
     export GYP_DEFINES="$GYP_DEFINES OS=android target_arch=arm64 target_subarch=arm64"
     export GYP_GENERATOR_FLAGS="$output_dir=out_android_arm64_v8a"
     export GYP_CROSSCOMPILE=1
-    echo "ARMv8 with Neon Build"
 }
 
 # x86
@@ -138,7 +132,6 @@ function wrX86() {
     wrbase
     export GYP_DEFINES="$GYP_DEFINES OS=android target_arch=ia32"
     export GYP_GENERATOR_FLAGS="output_dir=out_android_x86"
-    echo "x86 Build"
 }
 
 # x86_64
@@ -146,21 +139,17 @@ function wrX86_64() {
     wrbase
     export GYP_DEFINES="$GYP_DEFINES OS=android target_arch=x64"
     export GYP_GENERATOR_FLAGS="output_dir=out_android_x86_64"
-    echo "x86_64 Build"
 }
 
 
 # Setup our defines for the build
 prepare_gyp_defines() {
     # Configure environment for Android
-    echo Setting up build environment for Android
     source $WEBRTC_ROOT/src/build/android/envsetup.sh
 
     # Check to see if the user wants to set their own gyp defines
-    echo Export the base settings of GYP_DEFINES so we can define how we want to build
     if [ -n $USER_GYP_DEFINES ]
     then
-        echo "User has not specified any gyp defines so we proceed with default"
         if [ "$WEBRTC_ARCH" = "x86" ] ;
         then
             wrX86
@@ -175,11 +164,8 @@ prepare_gyp_defines() {
             wrarmv8
         fi
     else
-        echo "User has specified their own gyp defines"
         export GYP_DEFINES="$USER_GYP_DEFINES"
     fi
-
-    echo "GYP_DEFINES=$GYP_DEFINES"
 }
 
 # Builds the apprtc demo
@@ -223,8 +209,6 @@ execute_build() {
         create_directory_if_not_found "$TARGET_DIR"
         
         rm "$TARGET_DIR/$REVISION_NUM.zip" || true
-
-        echo "Copy JAR File"
         create_directory_if_not_found "$TARGET_DIR/libs/"
         create_directory_if_not_found "$TARGET_DIR/jniLibs/"
 
@@ -247,7 +231,6 @@ execute_build() {
             $ANDROID_TOOLCHAINS/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-strip -o $ARCH_JNI/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so -s
         fi
 
-        #cp -pr "$SOURCE_DIR"/* "$TARGET_DIR"
         cd $TARGET_DIR
         mkdir res # make resources directory
 
@@ -255,6 +238,7 @@ execute_build() {
         cd $WORKING_DIR
 
         
+        echo $REVISION_NUM > libWebRTC-$BUILD_TYPE.version
         echo "$BUILD_TYPE build for apprtc complete for revision $REVISION_NUM"
     else
         
