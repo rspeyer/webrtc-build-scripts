@@ -76,11 +76,9 @@ pull_depot_tools() {
 
 # Update/Get the webrtc code base
 pull_webrtc() {
-    WORKING_DIR=`pwd`
-
     # If no directory where webrtc root should be...
     create_directory_if_not_found $WEBRTC_ROOT
-    cd $WEBRTC_ROOT
+    pushd $WEBRTC_ROOT >/dev/null
 
     # Ensure our target os is correct building android
     echo Configuring gclient for Android build
@@ -102,7 +100,7 @@ pull_webrtc() {
     fi
 
     # Navigate back
-	cd $WORKING_DIR
+    popd >/dev/null
 }
 
 # Prepare our build
@@ -170,8 +168,7 @@ prepare_gyp_defines() {
 
 # Builds the apprtc demo
 execute_build() {
-    WORKING_DIR=`pwd`
-    cd "$WEBRTC_ROOT/src"
+    pushd "$WEBRTC_ROOT/src" >/dev/null
 
     echo Run gclient hooks
     gclient runhooks
@@ -244,6 +241,7 @@ execute_build() {
         
         echo "$BUILD_TYPE build for apprtc failed for revision $REVISION_NUM"
     fi
+    popd >/dev/null
 }
 
 # Gets the webrtc revision
