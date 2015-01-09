@@ -128,8 +128,8 @@ function no_error_on_warn() {
 function apply_tk_modifications() {
     enable_rtti
     enable_objc
-    warn_conversion
-    no_error_on_warn
+    #warn_conversion
+    #no_error_on_warn
 }
 
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
