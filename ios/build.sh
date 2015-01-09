@@ -22,6 +22,10 @@ DEPOT_TOOLS="$PROJECT_DIR/depot_tools"
 BUILD="$WEBRTC/libjingle_peerconnection_builds"
 WEBRTC_TARGET="AppRTCDemo"
 
+WEBRTC_RELEASE=
+WEBRTC_DEBUG=
+WEBRTC_PROFILE=
+
 function create_directory_if_not_found() {
     if [ ! -d "$1" ];
     then
@@ -97,6 +101,43 @@ function enable_rtti() {
   sed -i -e "s/\'GCC_ENABLE_CPP_RTTI\': \'NO\'/'GCC_ENABLE_CPP_RTTI\': \'YES\'/" $WEBRTC/src/build/common.gypi
 }
 
+function enable_objc() {
+  sed -i -e "s/\'GCC_C_LANGUAGE_STANDARD\': \'c99\'/'CLANG_ENABLE_OBJC_ARC\': \'YES\'/" $WEBRTC/src/build/common.gypi
+}
+
+function no_strict_aliasing() {
+  sed -i -e "s/\'CLANG_LINK_OBJC_RUNTIME\': \'NO\'/'GCC_STRICT_ALIASING\': \'NO\'/" $WEBRTC/src/build/common.gypi
+
+}
+
+function warn_conversion() {
+  awk -v q="'" '{
+    print;
+    if ($0 ~ "-Wno-missing-field-initializers") {
+        printf("\t\t\t\t\t%s-Wconversion%s,\n",q,q);
+    }
+}' $WEBRTC/src/build/common.gypi > /tmp/common.gypi && mv /tmp/common.gypi $WEBRTC/src/build/common.gypi
+}
+
+function no_error_on_warn() {
+  awk -v q="'" '{
+    if ($0 ~ "-Werror") {
+        // Skip
+    }
+    else {
+        print;
+    }
+}' $WEBRTC/src/build/common.gypi > /tmp/common.gypi && mv /tmp/common.gypi $WEBRTC/src/build/common.gypi
+}
+
+function apply_tk_modifications() {
+    enable_rtti
+    #enable_objc
+    #no_strict_aliasing
+    #warn_conversion
+    #no_error_on_warn
+}
+
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
     export GYP_DEFINES_BASE="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 use_system_libcxx=1"
@@ -106,7 +147,7 @@ function wrbase() {
 # Add the iOS Device specific defines on top of the base
 function wrios_armv7() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=armv7 arm_neon=1"
+    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=armv7"
     export GYP_GENERATOR_FLAGS="output_dir=out_ios_armeabi_v7a"
     export GYP_CROSSCOMPILE=1
 }
@@ -205,9 +246,11 @@ function clone() {
 # Fire the sync command. Accepts an argument as the revision number that you want to sync to
 function sync() {
     pull_depot_tools
+
     pushd $WEBRTC >/dev/null
     choose_code_signing
-    enable_rtti
+    apply_tk_modifications
+
     if [ -z $1 ]
     then
         gclient sync || true
@@ -230,7 +273,7 @@ function build_webrtc_mac() {
 
     wrMac64
     choose_code_signing
-    enable_rtti
+    apply_tk_modifications
     gclient runhooks
 
     copy_headers
@@ -255,7 +298,7 @@ function build_apprtc_sim() {
 
     wrX86
     choose_code_signing
-    enable_rtti
+    apply_tk_modifications
     gclient runhooks
 
     copy_headers
@@ -285,7 +328,7 @@ function build_apprtc() {
 
     wrios_armv7
     choose_code_signing
-    enable_rtti
+    apply_tk_modifications
     gclient runhooks
 
     copy_headers
@@ -316,7 +359,7 @@ function build_apprtc_arm64() {
 
     wrios_armv8
     choose_code_signing
-    enable_rtti
+    apply_tk_modifications
     gclient runhooks
 
     copy_headers
