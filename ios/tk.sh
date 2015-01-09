@@ -89,7 +89,7 @@ fi
 
 # 4. "Deploy" Code
 SRC_DIR=${BASE_DIR}/ios/webrtc
-DST_DIR=${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc
+DST_DIR=${HOME}/dev/talko_ios/ext/talko_voip_client/ext/webrtc/ios
 
 cp -v ${SRC_DIR}/libWebRTC-Universal-${BUILD}.a ${DST_DIR}/libWebRTC.a
 cp -v ${SRC_DIR}/libWebRTC-Universal-${BUILD}.version ${DST_DIR}/libWebRTC.version
