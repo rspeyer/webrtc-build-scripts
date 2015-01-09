@@ -105,6 +105,11 @@ function enable_objc() {
   sed -i -e "s/\'GCC_C_LANGUAGE_STANDARD\': \'c99\'/'CLANG_ENABLE_OBJC_ARC\': \'YES\'/" $WEBRTC/src/build/common.gypi
 }
 
+function no_strict_aliasing() {
+  sed -i -e "s/\'CLANG_LINK_OBJC_RUNTIME\': \'NO\'/'GCC_STRICT_ALIASING\': \'NO\'/" $WEBRTC/src/build/common.gypi
+
+}
+
 function warn_conversion() {
   awk -v q="'" '{
     print;
@@ -127,7 +132,8 @@ function no_error_on_warn() {
 
 function apply_tk_modifications() {
     enable_rtti
-    enable_objc
+    #enable_objc
+    #no_strict_aliasing
     #warn_conversion
     #no_error_on_warn
 }
@@ -141,7 +147,7 @@ function wrbase() {
 # Add the iOS Device specific defines on top of the base
 function wrios_armv7() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=armv7 arm_neon=1"
+    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=armv7"
     export GYP_GENERATOR_FLAGS="output_dir=out_ios_armeabi_v7a"
     export GYP_CROSSCOMPILE=1
 }
