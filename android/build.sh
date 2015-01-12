@@ -252,14 +252,14 @@ build_webrtc_all() {
     export WEBRTC_ARCH=armv7
     execute_build
 
-    export WEBRTC_ARCH=armv8
+    #export WEBRTC_ARCH=armv8
+    #execute_build
+
+    export WEBRTC_ARCH=x86
     execute_build
 
-#    export WEBRTC_ARCH=x86
-#    execute_build
-
-#    export WEBRTC_ARCH=x86_64
-#    execute_build
+    #export WEBRTC_ARCH=x86_64
+    #execute_build
 }
 
 build_webrtc() {
