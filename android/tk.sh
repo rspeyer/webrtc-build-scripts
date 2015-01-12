@@ -85,10 +85,18 @@ fi
 SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds
 DST_DIR=${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android
 
-cp -v ${SRC_DIR}/${BUILD}/jniLibs/armeabi_v7a/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-armeabi-v7a.so
-#cp -v ${SRC_DIR}/${BUILD}/jniLibs/arm64_v8a/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-arm64-v8a.so
-cp -v ${SRC_DIR}/${BUILD}/jniLibs/x86/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-x86.so
-#cp -v ${SRC_DIR}/${BUILD}/jniLibs/x86_64/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-x86_64.so
+## Static Library Files
+cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/armeabi_v7a ${DST_DIR}
+#cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/arm64_v8a ${DST_DIR}
+cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/x86 ${DST_DIR}
+#cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/x86_64 ${DST_DIR}
+
+## Shared Object Files
+#cp -v ${SRC_DIR}/${BUILD}/sharedlibs/armeabi_v7a/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-armeabi-v7a.so
+#cp -v ${SRC_DIR}/${BUILD}/sharedlibs/arm64_v8a/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-arm64-v8a.so
+#cp -v ${SRC_DIR}/${BUILD}/sharedlibs/x86/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-x86.so
+#cp -v ${SRC_DIR}/${BUILD}/sharedlibs/x86_64/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-x86_64.so
+
 cp -v ${SRC_DIR}/${BUILD}/libWebRTC-${BUILD}.version ${DST_DIR}/libWebRTC.version
 
 NOTIFY=$(which notify-send)
