@@ -210,15 +210,25 @@ execute_build() {
         TARGET_DIR="$BUILD/$BUILD_TYPE"
         create_directory_if_not_found "$TARGET_DIR"
         
-        create_directory_if_not_found "$TARGET_DIR/libs/"
-        create_directory_if_not_found "$TARGET_DIR/jniLibs/"
+        create_directory_if_not_found "$TARGET_DIR/jars/"
+        create_directory_if_not_found "$TARGET_DIR/sharedlibs/"
+        create_directory_if_not_found "$TARGET_DIR/staticlibs/"
 
-        ARCH_JNI="$TARGET_DIR/jniLibs/${ARCH}"
-        create_directory_if_not_found $ARCH_JNI
+        ARCH_SO="$TARGET_DIR/sharedlibs/${ARCH}"
+        create_directory_if_not_found $ARCH_SO
 
-        cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/libs/" 
+        ARCH_A="$TARGET_DIR/staticlibs/${ARCH}"
+        create_directory_if_not_found $ARCH_A
 
-        $STRIP -o $ARCH_JNI/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so -s
+        cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/jars/" 
+
+        $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so -s
+
+        pushd $SOURCE_DIR >/dev/null
+        for a in `find . -name '*.a' | grep -v ./obj.host/`; do
+            cp --parents $a $ARCH_A
+        done
+        popd >/dev/null
 
         cd $TARGET_DIR
         mkdir -p res
