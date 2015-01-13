@@ -31,7 +31,7 @@ create_directory_if_not_found() {
 
 exec_ninja() {
   echo "Running ninja"
-  ninja -C $1 $WEBRTC_TARGET
+  ninja -v -C $1 $WEBRTC_TARGET
 }
 
 # Installs the required dependencies on the machine
@@ -72,6 +72,19 @@ pull_depot_tools() {
 
     # Navigate back
 	cd $WORKING_DIR
+}
+
+enable_rtti() {
+    sed -i -e "s/'-fno-rtti',/'-frtti',/" $WEBRTC_ROOT/src/build/common.gypi
+}
+
+use_cxx11() {
+    sed -i -e "s/'-std=gnu++11'/'-std=c++11'/" $WEBRTC_ROOT/src/build/common.gypi
+}
+
+apply_tk_modifications() {
+    enable_rtti
+    #use_cxx11
 }
 
 # Update/Get the webrtc code base
@@ -172,6 +185,7 @@ execute_build() {
 
     echo Run gclient hooks
     prepare_gyp_defines
+    apply_tk_modifications
     gclient runhooks
 
     if [ "$WEBRTC_ARCH" = "x86" ] ;
