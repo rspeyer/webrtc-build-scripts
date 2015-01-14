@@ -31,7 +31,7 @@ create_directory_if_not_found() {
 
 exec_ninja() {
   echo "Running ninja"
-  ninja -v -C $1 $WEBRTC_TARGET
+  ninja -C $1 $WEBRTC_TARGET
 }
 
 # Installs the required dependencies on the machine
@@ -82,9 +82,14 @@ use_cxx11() {
     sed -i -e "s/'-std=gnu++11'/'-std=c++11'/" $WEBRTC_ROOT/src/build/common.gypi
 }
 
+no_exclude_libraries() {
+    sed -i -e "s/,--exclude-libs=ALL//" $WEBRTC_ROOT/src/build/common.gypi
+}
+
 apply_tk_modifications() {
     enable_rtti
     #use_cxx11
+    no_exclude_libraries
 }
 
 # Update/Get the webrtc code base
@@ -206,6 +211,8 @@ execute_build() {
         STRIP=$ANDROID_TOOLCHAINS/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-strip
     fi
 
+    STRIP="$STRIP -s -x"
+
     if [ "$WEBRTC_DEBUG" = "true" ] ;
     then
         BUILD_TYPE="Debug"
@@ -236,7 +243,7 @@ execute_build() {
 
         cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/jars/" 
 
-        $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so -S
+        $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so
 
         pushd $SOURCE_DIR >/dev/null
         for a in `find . -name '*.a' | grep -v ./obj.host/`; do
@@ -246,7 +253,7 @@ execute_build() {
 
         cd $TARGET_DIR
         mkdir -p res
-        zip -r "$TARGET_DIR/libWebRTC.zip" .
+        zip -r -q "$TARGET_DIR/libWebRTC.zip" .
         
         echo $REVISION_NUM > libWebRTC-$BUILD_TYPE.version
         echo "$BUILD_TYPE build for apprtc complete for revision $REVISION_NUM"
