@@ -19,7 +19,6 @@ function usage {
   echo "        [--build Release|Debug]" >&2
   echo "        [--clean]" >&2
   echo "        [--copy-only]" >&2
-  echo "        [--static]"
 }
 
 # 0. Parse arguments
@@ -39,9 +38,6 @@ do
     ;;
     --copy-only)
     COPYONLY=YES
-    ;;
-    --static)
-    STATIC=YES
     ;;
     --help)
     usage "Build and deploy WebRTC binary for Android into talko_android project"
@@ -85,26 +81,20 @@ then
   ${BASE_DIR}/android/build_webrtc.sh
 fi
 
+BASE_SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds/${BUILD}
+BASE_DST_DIR=${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android
 # 3. "Deploy" Code
-SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds
-DST_DIR=${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android
+ARCHS=("armeabi-v7a" "x86")
+for arch in "${ARCHS[@]}"; do
+    SRC_DIR=${BASE_SRC_DIR}/sharedlibs/${arch}
+    DST_DIR=${BASE_DST_DIR}/${arch}
 
-if [ ! -z "${STATIC+x}" ]
-then
-  ## Static Library Files
-  cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/armeabi_v7a ${DST_DIR}
-  #cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/arm64_v8a ${DST_DIR}
-  cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/x86 ${DST_DIR}
-  #cp -r -v ${SRC_DIR}/${BUILD}/staticlibs/x86_64 ${DST_DIR}
-else
-  ## Shared Object Files
-  cp -v ${SRC_DIR}/${BUILD}/sharedlibs/armeabi_v7a/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-armeabi-v7a.so
-  #cp -v ${SRC_DIR}/${BUILD}/sharedlibs/arm64_v8a/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-arm64-v8a.so
-  cp -v ${SRC_DIR}/${BUILD}/sharedlibs/x86/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-x86.so
-  #cp -v ${SRC_DIR}/${BUILD}/sharedlibs/x86_64/libjingle_peerconnection_so.so ${DST_DIR}/libWebRTC-x86_64.so
-fi
+    ## Shared Object Files
+    cp -v ${SRC_DIR}/libjingle_peerconnection_so.so ${DST_DIR}
+done
 
-cp -v ${SRC_DIR}/${BUILD}/libWebRTC-${BUILD}.version ${DST_DIR}/libWebRTC.version
+cp -v ${BASE_SRC_DIR}/jars/libjingle_peerconnection.jar ${BASE_DST_DIR}
+cp -v ${BASE_SRC_DIR}/libWebRTC-${BUILD}.version ${BASE_DST_DIR}/libWebRTC.version
 
 NOTIFY=$(which notify-send)
 if [ ! -z $NOTIFY ]
