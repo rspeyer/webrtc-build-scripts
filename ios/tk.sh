@@ -12,12 +12,14 @@ set -u
 BASE_DIR=${HOME}/dev/webrtc-build-scripts
 BRANCH=develop
 BUILD=Release
+ARCH=all
 
 function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug|Profile]" >&2
+  echo "        [--arch armv7|armv8|all]"
   echo "        [--clean]" >&2
   echo "        [--copy-only]" >&2
 }
@@ -32,6 +34,10 @@ do
     ;;
     --build)
     BUILD=$2
+    shift
+    ;;
+    --arch)
+    ARCH=$2
     shift
     ;;
     --clean)
@@ -81,9 +87,9 @@ then
   # 3. Build Code
   if [ ! -z "${APPLEINDEX+x}" ]
   then
-    ${BASE_DIR}/ios/build_webrtc.sh <<< $APPLEINDEX
+    ${BASE_DIR}/ios/build_webrtc.sh $BUILD $ARCH <<< $APPLEINDEX
   else
-    ${BASE_DIR}/ios/build_webrtc.sh
+    ${BASE_DIR}/ios/build_webrtc.sh $BUILD $ARCH
   fi
 fi
 

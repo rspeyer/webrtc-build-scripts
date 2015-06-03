@@ -14,4 +14,4 @@ done
 PROJECT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 source "$PROJECT_DIR/build.sh"
-build_webrtc
+build_webrtc $1 $2

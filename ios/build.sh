@@ -427,8 +427,14 @@ function get_webrtc() {
 # Build webrtc for an ios device and simulator, then create a universal library
 function build_webrtc() {
     # Default to DEBUG and RELEASE
-    WEBRTC_DEBUG=true
-    WEBRTC_RELEASE=true
+    if [[ $1 == Debug ]]
+    then
+        WEBRTC_DEBUG=true
+        WEBRTC_RELEASE=false
+    else
+        WEBRTC_DEBUG=false
+        WEBRTC_RELEASE=true
+    fi
 
     pull_depot_tools
 
@@ -436,8 +442,15 @@ function build_webrtc() {
     rm -rf ${BUILD}/*
 
     # Build
-    build_apprtc
-    build_apprtc_arm64
+    if  [ -z $2 ] || [[ $2 == all ]] || [[ $2 == armv7 ]]
+    then
+        build_apprtc
+    fi
+
+    if  [ -z $2 ] || [[ $2 == all ]] || [[ $2 == armv8 ]]
+    then
+        build_apprtc_arm64
+    fi
 
     # Create Universal Binary
     lipo_intel_and_arm
@@ -450,6 +463,7 @@ function dance() {
     if [ "$WEBRTC_RELEASE" = true ] ; then
         BUILD_DEBUG=false
     fi
+
     if [ "$WEBRTC_PROFILE" = true ] ; then
         BUILD_DEBUG=false
     fi
