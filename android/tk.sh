@@ -11,12 +11,14 @@ set -u
 BASE_DIR=${HOME}/webrtc-build-scripts
 BRANCH=develop
 BUILD=Release
+ARCH=all
 
 function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug]" >&2
+  echo "        [--arch x86|armv7|all]"
   echo "        [--clean]" >&2
   echo "        [--copy-only]" >&2
 }
@@ -31,6 +33,10 @@ do
     ;;
     --build)
     BUILD=$2
+    shift
+    ;;
+    --arch)
+    ARCH=$2
     shift
     ;;
     --clean)
@@ -78,7 +84,7 @@ then
   fi
 
   # 3. Build Code
-  ${BASE_DIR}/android/build_webrtc.sh
+  ${BASE_DIR}/android/build_webrtc.sh $BUILD $ARCH
 fi
 
 BASE_SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds/${BUILD}

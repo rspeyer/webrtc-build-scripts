@@ -9,4 +9,4 @@
 PROJECT_DIR=$(dirname $0)
 
 source "$PROJECT_DIR/build.sh"
-build_webrtc
+build_webrtc $1 $2

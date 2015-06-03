@@ -37,13 +37,13 @@ exec_ninja() {
 # Installs the required dependencies on the machine
 install_dependencies() {
     sudo apt-get -y install wget git gnupg flex bison gperf build-essential zip curl subversion pkg-config
-    #Additional dependencies per http://blog.gaku.net/building-webrtc-for-android-on-mac/
+    # Additional dependencies per http://blog.gaku.net/building-webrtc-for-android-on-mac/
     sudo apt-get -y install libgtk2.0-dev libxtst-dev libxss-dev libudev-dev libdbus-1-dev libgconf2-dev libgnome-keyring-dev libpci-dev
-    #Download the latest script to install the android dependencies for ubuntu
+    # Download the latest script to install the android dependencies for ubuntu
     curl -o install-build-deps-android.sh https://src.chromium.org/svn/trunk/src/build/install-build-deps-android.sh
-    #use bash (not dash which is default) to run the script
+    # Use bash (not dash which is default) to run the script
     sudo /bin/bash ./install-build-deps-android.sh
-    #delete the file we just downloaded... not needed anymore
+    # Delete the file we just downloaded... not needed anymore
     rm install-build-deps-android.sh
 }
 
@@ -269,9 +269,6 @@ get_webrtc_revision() {
     pushd $WEBRTC_ROOT/src >/dev/null
     git rev-parse HEAD
     popd >/dev/null
-
- #   git describe --tags  | sed 's/r\([0-9]*\)-.*/\1/' #Here's a nice little git version if you are using a git source
- #   svn info "$WEBRTC_ROOT/src" | awk '{ if ($1 ~ /Revision/) { print $2 } }'
 }
 
 get_webrtc() {
@@ -280,17 +277,17 @@ get_webrtc() {
 }
 
 build_webrtc_all() {
-    export WEBRTC_ARCH=armv7
-    execute_build
+    ARCHITECTURES=(armv7 x86)
+    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
 
-    #export WEBRTC_ARCH=armv8
-    #execute_build
-
-    export WEBRTC_ARCH=x86
-    execute_build
-
-    #export WEBRTC_ARCH=x86_64
-    #execute_build
+    for a in "${ARCHITECTURES[@]}"
+    do
+        if [ -z $1 ] || [[ $1 == all ]] || [[ $1 == $a ]]
+        then
+            export WEBRTC_ARCH=$a
+            execute_build
+        fi
+    done
 }
 
 build_webrtc() {
@@ -299,9 +296,11 @@ build_webrtc() {
     # Clean BUILD folder
     rm -rf ${BUILD}/*
 
-    WEBRTC_DEBUG=true
-    build_webrtc_all
-
-    WEBRTC_DEBUG=false
-    build_webrtc_all
+    if [[ $1 == Debug ]]
+    then
+        WEBRTC_DEBUG=true
+    else
+        WEBRTC_DEBUG=false
+    fi
+    build_webrtc_all $2
 }
