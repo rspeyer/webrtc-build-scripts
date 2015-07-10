@@ -9,7 +9,7 @@ set -e
 set -u
 
 BASE_DIR=${HOME}/webrtc-build-scripts
-BRANCH=develop
+BRANCH=talko_master
 BUILD=Release
 ARCH=all
 
