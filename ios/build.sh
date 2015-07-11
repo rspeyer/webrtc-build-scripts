@@ -141,14 +141,14 @@ function apply_tk_modifications() {
 
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
-    export GYP_DEFINES_BASE="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 use_system_libcxx=1"
-    export GYP_GENERATORS="ninja,xcode-ninja"
+    export GYP_DEFINES_BASE="OS=ios"
+    export GYP_GENERATORS=ninja
 }
 
 # Add the iOS Device specific defines on top of the base
 function wrios_armv7() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=armv7"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=arm"
     export GYP_GENERATOR_FLAGS="output_dir=out_ios_armeabi_v7a"
     export GYP_CROSSCOMPILE=1
 }
@@ -156,7 +156,7 @@ function wrios_armv7() {
 # Add the iOS ARM 64 Device specific defines on top of the base
 function wrios_armv8() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=arm64 target_subarch=arm64"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=arm64"
     export GYP_GENERATOR_FLAGS="output_dir=out_ios_arm64_v8a"
     export GYP_CROSSCOMPILE=1
 }
@@ -164,22 +164,15 @@ function wrios_armv8() {
 # Add the iOS Simulator X86 specific defines on top of the base
 function wrX86() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=ia32"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=ia32"
     export GYP_GENERATOR_FLAGS="output_dir=out_ios_x86"
 }
 
 # Add the iOS Simulator X64 specific defines on top of the base
 function wrX86_64() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=ios target_arch=x64"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=x64"
     export GYP_GENERATOR_FLAGS="output_dir=out_ios_x86_64"
-}
-
-# Add the Mac 64 bit intel defines
-function wrMac64() {
-    wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=mac target_arch=x64 use_system_ssl=1 use_openssl=0 use_nss=0 mac_sdk=10.9"
-    export GYP_GENERATOR_FLAGS="output_dir=out_mac_x86_64"
 }
 
 # Gets the revision number of the current WebRTC svn repo on the filesystem
@@ -267,30 +260,6 @@ function copy_headers() {
         create_directory_if_not_found "$BUILD"
         ln -s "$WEBRTC/src/talk/app/webrtc/objc/public/" "$WEBRTC/headers" || true
     fi
-}
-
-function build_webrtc_mac() {
-    pushd "$WEBRTC/src" >/dev/null
-
-    wrMac64
-    choose_code_signing
-    apply_tk_modifications
-    gclient runhooks
-
-    copy_headers
-
-    WEBRTC_REVISION=`get_revision_number`
-    if [ "$WEBRTC_DEBUG" = true ] ; then
-        exec_ninja "out_mac_x86_64/Debug/"
-        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Debug.a" $WEBRTC/src/out_mac_x86_64/Debug/*.a
-    fi
-
-    if [ "$WEBRTC_RELEASE" = true ] ; then
-        exec_ninja "out_mac_x86_64/Release/"
-        exec_strip $WEBRTC/src/out_mac_x86_64/Release/*.a
-        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-mac-x86_64-Release.a" $WEBRTC/src/out_mac_x86_64/Release/*.a
-    fi
-    popd >/dev/null
 }
 
 # Build AppRTC Demo for the simulator (ia32 architecture)
