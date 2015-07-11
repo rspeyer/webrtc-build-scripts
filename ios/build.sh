@@ -131,7 +131,8 @@ function no_error_on_warn() {
 }
 
 function apply_tk_modifications() {
-    enable_rtti
+    echo "No Talko modifications to apply"
+    #enable_rtti
     #enable_objc
     #no_strict_aliasing
     #warn_conversion
