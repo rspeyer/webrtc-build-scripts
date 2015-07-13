@@ -87,7 +87,7 @@ no_exclude_libraries() {
 }
 
 apply_tk_modifications() {
-    enable_rtti
+    #enable_rtti
     #use_cxx11
     no_exclude_libraries
 }
@@ -123,14 +123,14 @@ pull_webrtc() {
 
 # Prepare our build
 function wrbase() {
-    export GYP_DEFINES_BASE="OS=android host_os=linux libjingle_java=1 build_with_libjingle=1 build_with_chromium=0 enable_tracing=1 enable_android_opensl=1"
+    export GYP_DEFINES_BASE="OS=android host_os=linux libjingle_java=1 build_with_libjingle=1 build_with_chromium=0 enable_tracing=1"
     export GYP_GENERATORS="ninja"
 }
 
 # Arm V7 with Neon
 function wrarmv7() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=android"
+    export GYP_DEFINES="$GYP_DEFINES_BASE"
     export GYP_GENERATOR_FLAGS="output_dir=out_android_armeabi_v7a"
     export GYP_CROSSCOMPILE=1
 }
@@ -138,7 +138,7 @@ function wrarmv7() {
 # Arm 64
 function wrarmv8() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=android target_arch=arm64 target_subarch=arm64"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=arm64 target_subarch=arm64"
     export GYP_GENERATOR_FLAGS="output_dir=out_android_arm64_v8a"
     export GYP_CROSSCOMPILE=1
 }
@@ -146,14 +146,14 @@ function wrarmv8() {
 # x86
 function wrX86() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=android target_arch=ia32"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=ia32"
     export GYP_GENERATOR_FLAGS="output_dir=out_android_x86"
 }
 
 # x86_64
 function wrX86_64() {
     wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE OS=android target_arch=x64"
+    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=x64"
     export GYP_GENERATOR_FLAGS="output_dir=out_android_x86_64"
 }
 
@@ -161,7 +161,7 @@ function wrX86_64() {
 # Setup our defines for the build
 prepare_gyp_defines() {
     # Configure environment for Android
-    source $WEBRTC_ROOT/src/build/android/envsetup.sh
+    source $WEBRTC_ROOT/src/chromium/src/build/android/envsetup.sh
 
     # Check to see if the user wants to set their own gyp defines
     if [ -n $USER_GYP_DEFINES ]
