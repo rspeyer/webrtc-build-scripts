@@ -219,7 +219,7 @@ execute_build() {
     pushd $WEBRTC_ROOT/src >/dev/null
     REVISION_NUM=`git rev-parse HEAD`
     popd >/dev/null
-    
+
     # Verify the build actually worked
     if [ $? -eq 0 ]; then
         SOURCE_DIR="$WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE"
@@ -264,20 +264,6 @@ clone() {
     pull_webrtc
 }
 
-build_webrtc_all() {
-    ARCHITECTURES=(armv7 x86)
-    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
-
-    for a in "${ARCHITECTURES[@]}"
-    do
-        if [ -z $1 ] || [[ $1 == all ]] || [[ $1 == $a ]]
-        then
-            export WEBRTC_ARCH=$a
-            execute_build
-        fi
-    done
-}
-
 build_webrtc() {
     pull_depot_tools
     
@@ -290,5 +276,16 @@ build_webrtc() {
     else
         WEBRTC_DEBUG=false
     fi
-    build_webrtc_all $2
+
+    ARCHITECTURES=(armv7 x86)
+    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
+
+    for a in "${ARCHITECTURES[@]}"
+    do
+        if [ -z $2 ] || [[ $2 == all ]] || [[ $2 == $a ]]
+        then
+            export WEBRTC_ARCH=$a
+            execute_build
+        fi
+    done
 }
