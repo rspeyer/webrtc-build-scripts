@@ -100,22 +100,13 @@ pull_webrtc() {
 
     # Ensure our target os is correct building android
     echo Configuring gclient for Android build
-	gclient config --name=src http://webrtc.googlecode.com/svn/trunk
+    gclient config --unmanaged --name=src https://chromium.googlesource.com/external/webrtc
 	
-    #echo "target_os = ['unix', 'android']" >> .gclient
     cp ${PROJECT_ROOT}/gclient_android_and_unix_tools .gclient
 
     # Get latest webrtc source
-	echo Pull down the latest from the webrtc repo
-	echo this can take a while
-	if [ -z $1 ]
-    then
-        echo "gclient sync with newest"
-        gclient sync
-    else
-        echo "gclient sync with $1"
-        gclient sync -r $1
-    fi
+	echo Pull down the latest from the WebRTC repository
+    gclient sync
 
     # Navigate back
     popd >/dev/null
@@ -224,7 +215,11 @@ execute_build() {
     echo "Build ${WEBRTC_TARGET} in $BUILD_TYPE (arch: ${WEBRTC_ARCH:-arm})"
     exec_ninja "$ARCH_OUT/$BUILD_TYPE"
     
-    REVISION_NUM=`get_webrtc_revision`
+
+    pushd $WEBRTC_ROOT/src >/dev/null
+    REVISION_NUM=`git rev-parse HEAD`
+    popd >/dev/null
+
     # Verify the build actually worked
     if [ $? -eq 0 ]; then
         SOURCE_DIR="$WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE"
@@ -264,30 +259,9 @@ execute_build() {
     popd >/dev/null
 }
 
-# Gets the webrtc revision
-get_webrtc_revision() {
-    pushd $WEBRTC_ROOT/src >/dev/null
-    git rev-parse HEAD
-    popd >/dev/null
-}
-
-get_webrtc() {
-    pull_depot_tools &&
-    pull_webrtc $1
-}
-
-build_webrtc_all() {
-    ARCHITECTURES=(armv7 x86)
-    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
-
-    for a in "${ARCHITECTURES[@]}"
-    do
-        if [ -z $1 ] || [[ $1 == all ]] || [[ $1 == $a ]]
-        then
-            export WEBRTC_ARCH=$a
-            execute_build
-        fi
-    done
+clone() {
+    pull_depot_tools
+    pull_webrtc
 }
 
 build_webrtc() {
@@ -302,5 +276,16 @@ build_webrtc() {
     else
         WEBRTC_DEBUG=false
     fi
-    build_webrtc_all $2
+
+    ARCHITECTURES=(armv7 x86)
+    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
+
+    for a in "${ARCHITECTURES[@]}"
+    do
+        if [ -z $2 ] || [[ $2 == all ]] || [[ $2 == $a ]]
+        then
+            export WEBRTC_ARCH=$a
+            execute_build
+        fi
+    done
 }

@@ -16,6 +16,7 @@ ARCH=all
 function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
+  echo "        [--init]" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug]" >&2
   echo "        [--arch x86|armv7|all]"
@@ -27,6 +28,9 @@ function usage {
 while [ $# -gt 0 ]
 do
   case $1 in
+    --init)
+    INIT=YES
+    ;;
     --branch)
     BRANCH=$2
     shift
@@ -68,6 +72,11 @@ case $# in
   ;;
 esac
 
+if [ ! -z "${INIT+x}" ]
+then
+  ${BASE_DIR}/android/init_webrtc.sh 
+fi
+
 if [ -z "${COPYONLY+x}" ]
 then
   # 1. Update Code
@@ -89,6 +98,7 @@ fi
 
 BASE_SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds/${BUILD}
 BASE_DST_DIR=${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android
+
 # 3. "Deploy" Code
 ARCHS=("armeabi_v7a" "x86")
 for arch in "${ARCHS[@]}"; do
