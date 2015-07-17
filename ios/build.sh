@@ -88,9 +88,9 @@ function choose_code_signing() {
           security find-identity -v
           echo "Please select your code signing identity index from the above list:"
           read INDEX
-          IDENTITY=$(security find-identity -v | awk -v i=$INDEX -F "\) |\"" '{if (i==$1) {print $3}}')
+          IDENTITY=$(security find-identity -v | gawk -v i=$INDEX -F "\) |\"" '{if (i==$1) {print $3}}')
         else
-          IDENTITY=$(security find-identity -v | grep "iPhone Developer" | awk -F "\) |\"" '{print $3}')
+          IDENTITY=$(security find-identity -v | grep "iPhone Developer" | gawk -F "\) |\"" '{print $3}')
         fi
         echo Using code signing identity $IDENTITY
     fi
@@ -141,7 +141,7 @@ function apply_tk_modifications() {
 
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
-    export GYP_DEFINES_BASE="OS=ios"
+    export GYP_DEFINES_BASE="OS=ios build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 use_system_libcxx=1"
     export GYP_GENERATORS=ninja
 }
 
