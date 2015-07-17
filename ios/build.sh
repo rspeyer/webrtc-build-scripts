@@ -208,7 +208,7 @@ function update_webrtc() {
     cp ${PROJECT_DIR}/gclient_ios_and_mac_tools .gclient
     sync
 
-    echo "-- webrtc has been successfully updated"
+    echo "WebRTC has been successfully updated"
 }
 
 # This function cleans out your webrtc directory and does a fresh clone -- slower than a pull
