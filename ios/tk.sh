@@ -73,7 +73,7 @@ case $# in
   ;;
 esac
 
-if [ -z "${INIT+x}" ]
+if [ ! -z "${INIT+x}" ]
 then
   ${BASE_DIR}/ios/init_webrtc.sh
 fi

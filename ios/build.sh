@@ -215,6 +215,7 @@ function update_webrtc() {
 function clone() {
     if [ -d $WEBRTC ]
     then
+        echo Deleting old $WEBRTC
         rm -rf $WEBRTC
     fi
     mkdir -v $WEBRTC
