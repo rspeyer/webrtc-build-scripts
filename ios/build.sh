@@ -53,7 +53,6 @@ function exec_ninja() {
 
 # Update/Get/Ensure the Gclient Depot Tools
 function pull_depot_tools() {
-
     echo Get the current working directory so we can change directories back when done
     WORKING_DIR=`pwd`
 
@@ -359,12 +358,6 @@ function lipo_intel_and_arm() {
         ln -s $BUILD/libWebRTC-$WEBRTC_REVISION-arm-intel-Release.a $WEBRTC/libWebRTC-Universal-Release.a
         echo $WEBRTC_REVISION > $WEBRTC/libWebRTC-Universal-Release.version
     fi
-}
-
-# Convenience method to just "get webrtc" -- a clone
-function get_webrtc() {
-    pull_depot_tools
-    update_webrtc
 }
 
 # Build webrtc for an ios device and simulator, then create a universal library
