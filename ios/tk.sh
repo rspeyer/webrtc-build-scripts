@@ -17,6 +17,7 @@ ARCH=all
 function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
+  echo "        [--init]" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug|Profile]" >&2
   echo "        [--arch armv7|armv8|all]"
@@ -28,6 +29,9 @@ function usage {
 while [ $# -gt 0 ]
 do
   case $1 in
+    --init)
+    INIT=YES
+    ;;
     --branch)
     BRANCH=$2
     shift
@@ -68,6 +72,11 @@ case $# in
   exit 1
   ;;
 esac
+
+if [ -z "${INIT+x}" ]
+then
+  ${BASE_DIR}/ios/init_webrtc.sh
+fi
 
 if [ -z "${COPYONLY+x}" ]
 then
