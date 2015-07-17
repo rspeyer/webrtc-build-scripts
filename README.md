@@ -9,13 +9,19 @@ A set of build scripts useful for building WebRTC libraries for Android and iOS.
 cd $HOME/dev
 git clone git@github.com:talko/webrtc-build-scripts
 cd webrtc-build-scripts/android
-./tk.sh --init --branch BRANCH --build [Release|Debug|all]
+
+# Default branch is talko_master
+# Default build is Release
+./tk.sh --init [--branch BRANCH --build [Release|Debug|all]]
 ```
 
 #### Building
 ```bash
 cd $HOME/dev/webrtc-build-scripts/android
-./tk.sh --branch BRANCH --build [Release|Debug|all]
+
+# Default branch is talko_master
+# Default build is Release
+./tk.sh [--branch BRANCH --build [Release|Debug|all]]
 ```
 
 ##iOS
@@ -24,11 +30,17 @@ cd $HOME/dev/webrtc-build-scripts/android
 cd $HOME/dev
 git clone git@github.com:talko/webrtc-build-scripts
 cd webrtc-build-scripts/ios
-./tk.sh --init --branch BRANCH --build [Release|Debug|all]
+
+# Default branch is talko_master
+# Default build is Release
+./tk.sh --init [--branch BRANCH --build [Release|Debug|all]]
 ```
 
 #### Building
 ```bash
 cd $HOME/dev/webrtc-build-scripts/ios
-./tk.sh --branch BRANCH --build [Release|Debug|all]
+
+# Default branch is talko_master
+# Default build is Release
+./tk.sh [--branch BRANCH --build [Release|Debug|all]]
 ```
