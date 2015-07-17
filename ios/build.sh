@@ -93,7 +93,11 @@ function choose_code_signing() {
         fi
         echo Using code signing identity $IDENTITY
     fi
-    sed -i -e "s/\'CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\': \'iPhone Developer\',/\'CODE_SIGN_IDENTITY[sdk=iphoneos*]\': \'$IDENTITY\',/" $WEBRTC/src/build/common.gypi
+
+    if [ -f $WEBRTC/src/build/common.gypi ]
+    then
+        sed -i -e "s/\'CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\': \'iPhone Developer\',/\'CODE_SIGN_IDENTITY[sdk=iphoneos*]\': \'$IDENTITY\',/" $WEBRTC/src/build/common.gypi
+    fi
 }
 
 function enable_rtti() {
@@ -130,13 +134,16 @@ function no_error_on_warn() {
 }
 
 function apply_tk_modifications() {
-    echo "No Talko modifications to apply"
-    #enable_rtti
-    #enable_objc
-    #no_strict_aliasing
-    #warn_conversion
-    #no_error_on_warn
-}
+    if [ -f $WEBRTC/src/build/common.gypi ]
+    then
+        echo "No Talko modifications to apply"
+        #enable_rtti
+        #enable_objc
+        #no_strict_aliasing
+        #warn_conversion
+        #no_error_on_warn
+    fi
+}   
 
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
