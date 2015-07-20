@@ -243,36 +243,6 @@ function copy_headers() {
     fi
 }
 
-# Build AppRTC Demo for the simulator (ia32 architecture)
-function build_apprtc_sim() {
-    pushd "$WEBRTC/src" >/dev/null
-
-    wrX86
-    choose_code_signing
-    apply_tk_modifications
-    gclient runhooks
-
-    copy_headers
-
-    WEBRTC_REVISION=`get_revision_number`
-    if [ "$WEBRTC_DEBUG" = true ] ; then
-        exec_ninja "out_ios_x86/Debug-iphonesimulator/"
-        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Debug.a" $WEBRTC/src/out_ios_x86/Debug-iphonesimulator/*.a
-    fi
-
-    if [ "$WEBRTC_PROFILE" = true ] ; then
-        exec_ninja "out_ios_x86/Profile-iphonesimulator/"
-        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Profile.a" $WEBRTC/src/out_ios_x86/Profile-iphonesimulator/*.a
-    fi
-
-    if [ "$WEBRTC_RELEASE" = true ] ; then
-        exec_ninja "out_ios_x86/Release-iphonesimulator/"
-        exec_strip $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
-        exec_libtool "$BUILD/libWebRTC-$WEBRTC_REVISION-ios-x86-Release.a" $WEBRTC/src/out_ios_x86/Release-iphonesimulator/*.a
-    fi
-    popd >/dev/null
-}
-
 # Build AppRTC Demo for a real device
 function build_apprtc() {
     pushd "$WEBRTC/src" >/dev/null
