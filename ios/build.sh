@@ -342,15 +342,8 @@ function build_webrtc() {
     rm -rf ${BUILD}/*
 
     # Build
-    if  [ -z $2 ] || [[ $2 == all ]] || [[ $2 == armv7 ]]
-    then
-        build_apprtc
-    fi
-
-    if  [ -z $2 ] || [[ $2 == all ]] || [[ $2 == armv8 ]]
-    then
-        build_apprtc_arm64
-    fi
+    build_apprtc
+    build_apprtc_arm64
 
     # Create Universal Binary
     lipo_intel_and_arm
