@@ -167,20 +167,6 @@ function wrios_armv8() {
     export GYP_CROSSCOMPILE=1
 }
 
-# Add the iOS Simulator X86 specific defines on top of the base
-function wrX86() {
-    wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=ia32"
-    export GYP_GENERATOR_FLAGS="output_dir=out_ios_x86"
-}
-
-# Add the iOS Simulator X64 specific defines on top of the base
-function wrX86_64() {
-    wrbase
-    export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=x64"
-    export GYP_GENERATOR_FLAGS="output_dir=out_ios_x86_64"
-}
-
 # Gets the revision number of the current WebRTC svn repo on the filesystem
 function get_revision_number() {
     pushd $WEBRTC/src >/dev/null
