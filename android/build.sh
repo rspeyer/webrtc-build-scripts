@@ -7,13 +7,7 @@
 #
 # Builds the android peer connection library
 
-# Set your environment how you want
-if [ ! -z "${VAGRANT_MACHINE+x}" ]
-    then
-    PROJECT_ROOT="/vagrant"
-else
-    PROJECT_ROOT=$(dirname $0)
-fi
+PROJECT_ROOT=$(dirname $0)
 
 DEPOT_TOOLS="$PROJECT_ROOT/depot_tools"
 WEBRTC_ROOT="$PROJECT_ROOT/webrtc"
