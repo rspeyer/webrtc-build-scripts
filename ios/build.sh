@@ -102,6 +102,7 @@ function choose_code_signing() {
 
 function enable_rtti() {
   sed -i -e "s/\'GCC_ENABLE_CPP_RTTI\': \'NO\'/'GCC_ENABLE_CPP_RTTI\': \'YES\'/" $WEBRTC/src/build/common.gypi
+  sed -i -e "s/-fno-rtti/-frtti/" $WEBRTC/src/build/common.gypi
 }
 
 function enable_objc() {
@@ -136,8 +137,7 @@ function no_error_on_warn() {
 function apply_tk_modifications() {
     if [ -f $WEBRTC/src/build/common.gypi ]
     then
-        echo "No Talko modifications to apply"
-        #enable_rtti
+        enable_rtti
         #enable_objc
         #no_strict_aliasing
         #warn_conversion
