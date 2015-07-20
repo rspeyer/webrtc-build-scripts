@@ -17,6 +17,7 @@ function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
   echo "        [--init]" >&2
+  echo "        [--local]" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug|Profile]" >&2
   echo "        [--clean]" >&2
@@ -29,6 +30,9 @@ do
   case $1 in
     --init)
     INIT=YES
+    ;;
+    --local)
+    LOCAL=YES
     ;;
     --branch)
     BRANCH=$2
@@ -74,12 +78,15 @@ fi
 
 if [ -z "${COPYONLY+x}" ]
 then
-  # 1. Update Code
-  pushd ${BASE_DIR}/ios/webrtc/src >/dev/null
-  git fetch
-  git checkout ${BRANCH}
-  git reset --hard origin/${BRANCH}
-  popd >/dev/null
+  if [ -z "${LOCAL+x}" ]
+  then
+    # 1. Update Code
+    pushd ${BASE_DIR}/ios/webrtc/src >/dev/null
+    git fetch
+    git checkout ${BRANCH}
+    git reset --hard origin/${BRANCH}
+    popd >/dev/null
+  fi
 
   # 2. Clean intermediates if requested
   if [ ! -z "${CLEAN+x}" ]
