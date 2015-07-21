@@ -69,6 +69,7 @@ pull_depot_tools() {
 }
 
 enable_rtti() {
+    sed -i -e "s/\'GCC_ENABLE_CPP_RTTI\': \'NO\'/'GCC_ENABLE_CPP_RTTI\': \'YES\'/" $WEBRTC_ROOT/src/build/common.gypi
     sed -i -e "s/'-fno-rtti',/'-frtti',/" $WEBRTC_ROOT/src/build/common.gypi
 }
 
@@ -81,9 +82,12 @@ no_exclude_libraries() {
 }
 
 apply_tk_modifications() {
-    #enable_rtti
-    #use_cxx11
-    no_exclude_libraries
+    if [ -f $WEBRTC_ROOT/src/build/common.gypi ]
+    then
+        enable_rtti
+        #use_cxx11
+        no_exclude_libraries
+    fi
 }
 
 # Update/Get the webrtc code base
