@@ -169,7 +169,6 @@ prepare_gyp_defines() {
     fi
 }
 
-# Builds the apprtc demo
 execute_build() {
     pushd "$WEBRTC_ROOT/src" >/dev/null
 
@@ -230,7 +229,7 @@ execute_build() {
         ARCH_A="$TARGET_DIR/staticlibs/${ARCH}"
         create_directory_if_not_found $ARCH_A
 
-        cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/jars/" 
+        cp -p "$SOURCE_DIR/gen/libjingle_peerconnection_java/libjingle_peerconnection_java.jar" "$TARGET_DIR/jars/libjingle_peerconnection.jar" 
 
         $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so
 
@@ -245,10 +244,10 @@ execute_build() {
         zip -r -q "$TARGET_DIR/libWebRTC.zip" .
         
         echo $REVISION_NUM > libWebRTC-$BUILD_TYPE.version
-        echo "$BUILD_TYPE build for apprtc complete for revision $REVISION_NUM"
+        echo "$BUILD_TYPE build for WebRTC complete for revision $REVISION_NUM"
     else
         
-        echo "$BUILD_TYPE build for apprtc failed for revision $REVISION_NUM"
+        echo "$BUILD_TYPE build for WebRTC failed for revision $REVISION_NUM"
     fi
     popd >/dev/null
 }
