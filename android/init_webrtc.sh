@@ -9,5 +9,4 @@
 PROJECT_DIR=$(dirname $0)
 
 source "$PROJECT_DIR/build.sh"
-install_dependencies
 clone
