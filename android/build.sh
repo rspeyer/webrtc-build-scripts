@@ -118,7 +118,7 @@ pull_webrtc() {
 }
 
 function wrbase() {
-    export GYP_DEFINES_BASE="OS=android host_os=linux libjingle_java=1 build_with_libjingle=1 build_with_chromium=0 enable_tracing=1"
+    export GYP_DEFINES_BASE="OS=android host_os=linux libjingle_java=1 build_with_libjingle=1 build_with_chromium=0 enable_tracing=1 enable_protobuf=0"
     export GYP_GENERATORS="ninja"
 }
 
