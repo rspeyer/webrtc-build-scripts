@@ -73,6 +73,12 @@ enable_rtti() {
     sed -i -e "s/'-fno-rtti',/'-frtti',/" $WEBRTC_ROOT/src/build/common.gypi
 }
 
+use_stlport() {
+    sed -i -e "s/llvm-libc++abi/stlport/" $WEBRTC_ROOT/src/build/common.gypi
+    sed -i -e "s/llvm-libc++/stlport/" $WEBRTC_ROOT/src/build/common.gypi
+    sed -i -e "s/libcxx\/include/stlport/" $WEBRTC_ROOT/src/build/common.gypi
+}
+
 use_cxx11() {
     sed -i -e "s/'-std=gnu++11'/'-std=c++11'/" $WEBRTC_ROOT/src/build/common.gypi
 }
@@ -85,6 +91,7 @@ apply_tk_modifications() {
     if [ -f $WEBRTC_ROOT/src/build/common.gypi ]
     then
         enable_rtti
+        #use_stlport
         use_cxx11
         no_exclude_libraries
     fi
