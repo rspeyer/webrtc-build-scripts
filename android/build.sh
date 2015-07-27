@@ -233,9 +233,9 @@ execute_build() {
         create_directory_if_not_found $ARCH_A
 
         cp -p "$SOURCE_DIR/gen/libjingle_peerconnection_java/libjingle_peerconnection_java.jar" "$TARGET_DIR/jars/libjingle_peerconnection.jar" 
-        if [ "$WEBRTC_DEBUG" = "true" ] ;
+        if [ "$WEBRTC_DEBUG" = "true" ]
         then
-            cp -p $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so
+            cp -p $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so $ARCH_SO/libjingle_peerconnection_so.so
         else
             $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so
         fi
