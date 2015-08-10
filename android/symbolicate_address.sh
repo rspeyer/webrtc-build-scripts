@@ -3,12 +3,12 @@
 set -e
 set -u
 
-ARCH=armeabi_v7a
+ARCH=armeabi-v7a
 
 function usage {
     echo $1 >&2
     echo "Usage: $0 " >&2
-    echo "        [--arch] [armeabi_v7a|x86]" >&2
+    echo "        [--arch] [armeabi-v7a|x86]" >&2
     echo "        [--address|-a] address" >&2
 }
 
@@ -57,4 +57,15 @@ then
     exit 1
 fi
 
-addr2line -C -f -e ${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
+ADDRLINE=
+ARCHDIR=
+if [[ $ARCH == armeabi-v7a ]]
+then
+  ADDRLINE=${ANDROID_NDK_HOME}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line
+  ARCHDIR=out_android_armeabi_v7a
+else
+  ADDRLINE=${ANDROID_NDK_HOME}/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-addr2line
+  ARCHDIR=out_android_x86
+fi
+
+$ADDRLINE -C -f -e ${HOME}/webrtc-build-scripts/android/webrtc/src/${ARCHDIR}/Release/AppRTCDemo/libs/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
