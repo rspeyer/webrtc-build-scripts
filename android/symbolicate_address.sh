@@ -3,6 +3,8 @@
 set -e
 set -u
 
+#awk '{print system("/home/talko/webrtc-build-scripts/android/symbolicate_address.sh -a "$5)}' ~/share/in.log
+
 ARCH=armeabi-v7a
 
 function usage {
