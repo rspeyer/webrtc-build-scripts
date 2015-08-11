@@ -6,28 +6,34 @@ set -u
 #awk '{print system("/home/talko/webrtc-build-scripts/android/symbolicate_address.sh -a "$5)}' ~/share/in.log
 
 ARCH=armeabi-v7a
+BUILD=Release
 
 function usage {
     echo $1 >&2
     echo "Usage: $0 " >&2
-    echo "        [--arch] [armeabi-v7a|x86]" >&2
     echo "        [--address|-a] address" >&2
+    echo "        [--arch] [armeabi-v7a|x86]" >&2
+    echo "        [--build] [Release|Debug]" >&2
 }
 
 # 0. Parse arguments
 while [ $# -gt 0 ]
 do
   case $1 in
-    --arch)
-    ARCH=$2
-    shift
-    ;;
     -a)
     ADDRESS=$2
     shift
     ;;
     --address)
     ADDRESS=$2
+    shift
+    ;;
+    --arch)
+    ARCH=$2
+    shift
+    ;;
+    --build)
+    BUILD=$2
     shift
     ;;
     --help)
@@ -70,4 +76,4 @@ else
   ARCHDIR=out_android_x86
 fi
 
-$ADDRLINE -C -f -e ${HOME}/webrtc-build-scripts/android/webrtc/src/${ARCHDIR}/Release/AppRTCDemo/libs/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
+$ADDRLINE -C -p -a -f -e ${HOME}/webrtc-build-scripts/android/webrtc/src/${ARCHDIR}/${BUILD}/AppRTCDemo/libs/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
