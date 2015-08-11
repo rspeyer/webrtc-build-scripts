@@ -67,13 +67,15 @@ fi
 
 ADDRLINE=
 ARCHDIR=
+WEBRTC_ROOT=${HOME}/webrtc-build-scripts/android/webrtc/src
+ANDROID_TOOLCHAINS=${WEBRTC_ROOT}/third_party/android_tools/ndk/toolchains
 if [[ $ARCH == armeabi-v7a ]]
 then
-  ADDRLINE=${ANDROID_NDK_HOME}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line
+  ADDRLINE=${ANDROID_TOOLCHAINS}/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line
   ARCHDIR=out_android_armeabi_v7a
 else
-  ADDRLINE=${ANDROID_NDK_HOME}/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-addr2line
+  ADDRLINE=${ANDROID_TOOLCHAINS}/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-addr2line
   ARCHDIR=out_android_x86
 fi
 
-$ADDRLINE -C -p -a -f -e ${HOME}/webrtc-build-scripts/android/webrtc/src/${ARCHDIR}/${BUILD}/AppRTCDemo/libs/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
+$ADDRLINE -C -p -a -f -e ${WEBRTC_ROOT}/${ARCHDIR}/${BUILD}/AppRTCDemo/libs/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
