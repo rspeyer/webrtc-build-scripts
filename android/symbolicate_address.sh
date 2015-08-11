@@ -3,7 +3,7 @@
 set -e
 set -u
 
-#awk '{print system("/home/talko/webrtc-build-scripts/android/symbolicate_address.sh -a "$5)}' ~/share/in.log
+#awk '{system("/home/talko/webrtc-build-scripts/android/symbolicate_address.sh -a "$5)}' ~/share/in.log
 
 ARCH=armeabi-v7a
 BUILD=Release
@@ -78,4 +78,4 @@ else
   ARCHDIR=out_android_x86
 fi
 
-$ADDRLINE -C -p -a -f -e ${WEBRTC_ROOT}/${ARCHDIR}/${BUILD}/AppRTCDemo/libs/${ARCH}/libjingle_peerconnection_so.so ${ADDRESS}
+$ADDRLINE -C -p -a -f -e ${WEBRTC_ROOT}/${ARCHDIR}/${BUILD}/lib/libjingle_peerconnection_so.so ${ADDRESS}
