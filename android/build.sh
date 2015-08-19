@@ -277,9 +277,7 @@ build_webrtc() {
         WEBRTC_DEBUG=false
     fi
 
-    ARCHITECTURES=(armv7 x86)
-    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
-
+    ARCHITECTURES=(armv7 x86 armv8 x86_64)
     for a in "${ARCHITECTURES[@]}"
     do
         if [ -z $2 ] || [[ $2 == all ]] || [[ $2 == $a ]]

@@ -20,7 +20,7 @@ function usage {
   echo "        [--local]" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug]" >&2
-  echo "        [--arch x86|armv7|all]"
+  echo "        [--arch x86|x86_64|armv7|armv8|all]"
   echo "        [--clean]" >&2
   echo "        [--copy-only]" >&2
 }
@@ -107,7 +107,7 @@ BASE_SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds/${BUILD}
 BASE_DST_DIR=${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android
 
 # 3. "Deploy" Code
-ARCHS=("armeabi_v7a" "x86")
+ARCHS=("armeabi_v7a" "arm64_v8a" "x86" "x86_64")
 for arch in "${ARCHS[@]}"; do
     SRC_DIR=${BASE_SRC_DIR}/sharedlibs/${arch}
     DST_DIR=${BASE_DST_DIR}/${arch}
