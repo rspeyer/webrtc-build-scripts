@@ -141,7 +141,7 @@ function apply_tk_modifications() {
     if [ -f $WEBRTC/src/build/common.gypi ]
     then
         enable_rtti
-        enable_bitcode
+        #enable_bitcode
         #enable_objc
         #no_strict_aliasing
         #warn_conversion
