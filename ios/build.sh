@@ -105,13 +105,16 @@ function enable_rtti() {
   sed -i -e "s/-fno-rtti/-frtti/" $WEBRTC/src/build/common.gypi
 }
 
+function enable_bitcode() {
+  sed -i -e "s/'OTHER_CFLAGS\': \[ \'<@(release_extra_cflags)\', \],/'\OTHER_CFLAGS\': \[ \'<@(release_extra_cflags)\', \'-fembed-bitcode\', \],/" $WEBRTC/src/build/common.gypi
+}
+
 function enable_objc() {
   sed -i -e "s/\'GCC_C_LANGUAGE_STANDARD\': \'c99\'/'CLANG_ENABLE_OBJC_ARC\': \'YES\'/" $WEBRTC/src/build/common.gypi
 }
 
 function no_strict_aliasing() {
   sed -i -e "s/\'CLANG_LINK_OBJC_RUNTIME\': \'NO\'/'GCC_STRICT_ALIASING\': \'NO\'/" $WEBRTC/src/build/common.gypi
-
 }
 
 function warn_conversion() {
@@ -138,6 +141,7 @@ function apply_tk_modifications() {
     if [ -f $WEBRTC/src/build/common.gypi ]
     then
         enable_rtti
+        enable_bitcode
         #enable_objc
         #no_strict_aliasing
         #warn_conversion
@@ -147,7 +151,7 @@ function apply_tk_modifications() {
 
 # Set the base of the GYP defines, instructing gclient runhooks what to generate
 function wrbase() {
-    export GYP_DEFINES_BASE="OS=ios build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 use_system_libcxx=1"
+    export GYP_DEFINES_BASE="OS=ios build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 use_system_libcxx=1 clang_xcode=1"
     export GYP_GENERATORS=ninja
 }
 
