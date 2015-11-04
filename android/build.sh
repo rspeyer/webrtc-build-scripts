@@ -7,13 +7,7 @@
 #
 # Builds the android peer connection library
 
-# Set your environment how you want
-if [ ! -z "${VAGRANT_MACHINE+x}" ]
-    then
-    PROJECT_ROOT="/vagrant"
-else
-    PROJECT_ROOT=$(dirname $0)
-fi
+PROJECT_ROOT=$(dirname $0)
 
 DEPOT_TOOLS="$PROJECT_ROOT/depot_tools"
 WEBRTC_ROOT="$PROJECT_ROOT/webrtc"
@@ -75,7 +69,14 @@ pull_depot_tools() {
 }
 
 enable_rtti() {
+    sed -i -e "s/\'GCC_ENABLE_CPP_RTTI\': \'NO\'/'GCC_ENABLE_CPP_RTTI\': \'YES\'/" $WEBRTC_ROOT/src/build/common.gypi
     sed -i -e "s/'-fno-rtti',/'-frtti',/" $WEBRTC_ROOT/src/build/common.gypi
+}
+
+use_stlport() {
+    sed -i -e "s/llvm-libc++abi/stlport/" $WEBRTC_ROOT/src/build/common.gypi
+    sed -i -e "s/llvm-libc++/stlport/" $WEBRTC_ROOT/src/build/common.gypi
+    sed -i -e "s/libcxx\/include/stlport/" $WEBRTC_ROOT/src/build/common.gypi
 }
 
 use_cxx11() {
@@ -87,9 +88,13 @@ no_exclude_libraries() {
 }
 
 apply_tk_modifications() {
-    #enable_rtti
-    #use_cxx11
-    no_exclude_libraries
+    if [ -f $WEBRTC_ROOT/src/build/common.gypi ]
+    then
+        enable_rtti
+        #use_stlport
+        use_cxx11
+        no_exclude_libraries
+    fi
 }
 
 # Update/Get the webrtc code base
@@ -100,7 +105,7 @@ pull_webrtc() {
 
     # Ensure our target os is correct building android
     echo Configuring gclient for Android build
-    gclient config --unmanaged --name=src https://chromium.googlesource.com/external/webrtc
+    gclient config --name=src https://chromium.googlesource.com/external/webrtc
 	
     cp ${PROJECT_ROOT}/gclient_android_and_unix_tools .gclient
 
@@ -112,13 +117,12 @@ pull_webrtc() {
     popd >/dev/null
 }
 
-# Prepare our build
 function wrbase() {
-    export GYP_DEFINES_BASE="OS=android host_os=linux libjingle_java=1 build_with_libjingle=1 build_with_chromium=0 enable_tracing=1"
+    export GYP_DEFINES_BASE="OS=android host_os=linux libjingle_java=1 build_with_libjingle=1 build_with_chromium=0 enable_tracing=1 enable_protobuf=0"
     export GYP_GENERATORS="ninja"
 }
 
-# Arm V7 with Neon
+# ARMv7
 function wrarmv7() {
     wrbase
     export GYP_DEFINES="$GYP_DEFINES_BASE"
@@ -126,7 +130,7 @@ function wrarmv7() {
     export GYP_CROSSCOMPILE=1
 }
 
-# Arm 64
+# ARM64
 function wrarmv8() {
     wrbase
     export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=arm64 target_subarch=arm64"
@@ -154,28 +158,21 @@ prepare_gyp_defines() {
     # Configure environment for Android
     source $WEBRTC_ROOT/src/chromium/src/build/android/envsetup.sh
 
-    # Check to see if the user wants to set their own gyp defines
-    if [ -n $USER_GYP_DEFINES ]
+    if [ "$WEBRTC_ARCH" = "x86" ] ;
     then
-        if [ "$WEBRTC_ARCH" = "x86" ] ;
-        then
-            wrX86
-        elif [ "$WEBRTC_ARCH" = "x86_64" ] ;
-        then
-            wrX86_64
-        elif [ "$WEBRTC_ARCH" = "armv7" ] ;
-        then
-            wrarmv7
-        elif [ "$WEBRTC_ARCH" = "armv8" ] ;
-        then
-            wrarmv8
-        fi
-    else
-        export GYP_DEFINES="$USER_GYP_DEFINES"
+        wrX86
+    elif [ "$WEBRTC_ARCH" = "x86_64" ] ;
+    then
+        wrX86_64
+    elif [ "$WEBRTC_ARCH" = "armv7" ] ;
+    then
+        wrarmv7
+    elif [ "$WEBRTC_ARCH" = "armv8" ] ;
+    then
+        wrarmv8
     fi
 }
 
-# Builds the apprtc demo
 execute_build() {
     pushd "$WEBRTC_ROOT/src" >/dev/null
 
@@ -214,7 +211,6 @@ execute_build() {
     ARCH_OUT="out_android_${ARCH}"
     echo "Build ${WEBRTC_TARGET} in $BUILD_TYPE (arch: ${WEBRTC_ARCH:-arm})"
     exec_ninja "$ARCH_OUT/$BUILD_TYPE"
-    
 
     pushd $WEBRTC_ROOT/src >/dev/null
     REVISION_NUM=`git rev-parse HEAD`
@@ -236,9 +232,13 @@ execute_build() {
         ARCH_A="$TARGET_DIR/staticlibs/${ARCH}"
         create_directory_if_not_found $ARCH_A
 
-        cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/jars/" 
-
-        $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so
+        cp -p "$SOURCE_DIR/gen/libjingle_peerconnection_java/libjingle_peerconnection_java.jar" "$TARGET_DIR/jars/libjingle_peerconnection.jar" 
+        if [ "$WEBRTC_DEBUG" = "true" ]
+        then
+            cp -p $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so $ARCH_SO/libjingle_peerconnection_so.so
+        else
+            $STRIP -o $ARCH_SO/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$ARCH_OUT/$BUILD_TYPE/lib/libjingle_peerconnection_so.so
+        fi
 
         pushd $SOURCE_DIR >/dev/null
         for a in `find . -name '*.a' | grep -v ./obj.host/`; do
@@ -251,10 +251,10 @@ execute_build() {
         zip -r -q "$TARGET_DIR/libWebRTC.zip" .
         
         echo $REVISION_NUM > libWebRTC-$BUILD_TYPE.version
-        echo "$BUILD_TYPE build for apprtc complete for revision $REVISION_NUM"
+        echo "$BUILD_TYPE build for WebRTC complete for revision $REVISION_NUM"
     else
         
-        echo "$BUILD_TYPE build for apprtc failed for revision $REVISION_NUM"
+        echo "$BUILD_TYPE build for WebRTC failed for revision $REVISION_NUM"
     fi
     popd >/dev/null
 }
@@ -277,9 +277,7 @@ build_webrtc() {
         WEBRTC_DEBUG=false
     fi
 
-    ARCHITECTURES=(armv7 x86)
-    #ARCHITECTURES=(armv7 x86 armv8 x8_64)
-
+    ARCHITECTURES=(armv7 x86 armv8 x86_64)
     for a in "${ARCHITECTURES[@]}"
     do
         if [ -z $2 ] || [[ $2 == all ]] || [[ $2 == $a ]]

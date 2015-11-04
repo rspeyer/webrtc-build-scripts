@@ -17,9 +17,10 @@ function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
   echo "        [--init]" >&2
+  echo "        [--local]" >&2
   echo "        [--branch BRANCH]" >&2
   echo "        [--build Release|Debug]" >&2
-  echo "        [--arch x86|armv7|all]"
+  echo "        [--arch x86|x86_64|armv7|armv8|all]"
   echo "        [--clean]" >&2
   echo "        [--copy-only]" >&2
 }
@@ -30,6 +31,9 @@ do
   case $1 in
     --init)
     INIT=YES
+    ;;
+    --local)
+    LOCAL=YES
     ;;
     --branch)
     BRANCH=$2
@@ -79,12 +83,15 @@ fi
 
 if [ -z "${COPYONLY+x}" ]
 then
-  # 1. Update Code
-  pushd ${BASE_DIR}/android/webrtc/src >/dev/null
-  git fetch
-  git checkout ${BRANCH}
-  git reset --hard origin/${BRANCH}
-  popd >/dev/null
+  if [ -z "${LOCAL+x}" ]
+  then
+    # 1. Update Code
+    pushd ${BASE_DIR}/android/webrtc/src >/dev/null
+    git fetch
+    git checkout ${BRANCH}
+    git reset --hard origin/${BRANCH}
+    popd >/dev/null
+  fi
 
   # 2. Clean intermediates if requested
   if [ ! -z "${CLEAN+x}" ]
@@ -100,7 +107,7 @@ BASE_SRC_DIR=${BASE_DIR}/android/webrtc/libjingle_peerconnection_builds/${BUILD}
 BASE_DST_DIR=${HOME}/talko_android/ext/talko_voip_client/ext/webrtc/android
 
 # 3. "Deploy" Code
-ARCHS=("armeabi_v7a" "x86")
+ARCHS=("armeabi_v7a" "arm64_v8a" "x86" "x86_64")
 for arch in "${ARCHS[@]}"; do
     SRC_DIR=${BASE_SRC_DIR}/sharedlibs/${arch}
     DST_DIR=${BASE_DST_DIR}/${arch}
