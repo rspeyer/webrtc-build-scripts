@@ -3,7 +3,8 @@
 set -e
 set -u
 
-#awk '{system("/home/talko/webrtc-build-scripts/android/symbolicate_address.sh -a "$5)}' ~/share/in.log
+#awk '{printf("%s\t%s\t0x%x\t%s\n", $1, $2, $3, $4)}' in.raw  > in.hex
+#awk '{system("/home/talko/webrtc-build-scripts/android/symbolicate_address.sh -a "$5)}' in.hex
 
 ARCH=armeabi-v7a
 BUILD=Release
@@ -74,12 +75,15 @@ then
   ADDRLINE=${ANDROID_TOOLCHAINS}/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-addr2line
   ARCHDIR=out_android_armeabi_v7a
 elif [[ $ARCH == arm64_v8a ]]
+then
   ADDRLINE=${ANDROID_TOOLCHAINS}/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-addr2line
   ARCHDIR=out_android_arm64_v8a
 elif [[ $ARCH == x86 ]]
+then
   ADDRLINE=${ANDROID_TOOLCHAINS}/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-addr2line
   ARCHDIR=out_android_x86
 elif [[ $ARCH == x86_64 ]]
+then
   ADDRLINE=${ANDROID_TOOLCHAINS}/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-addr2line
   ARCHDIR=out_android_x86_64
 fi
