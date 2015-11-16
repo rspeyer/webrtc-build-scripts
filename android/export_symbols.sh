@@ -84,13 +84,15 @@ done
 # 2. TAR
 TARFILE=/tmp/talko-webrtc-symbols-${VERSION}.tar
 pushd ${TMP} >/dev/null
-tar -cvzf ${TARFILE} .
+tar -czf ${TARFILE} .
 popd >/dev/null
 
 # 3. Upload
 if [ ! -z "${NOUPLOAD+x}" ]
 then
 #FIXME
+else
+    echo "WARNING: Skipping upload of symbols"
 fi
 
 # 4. Echo
