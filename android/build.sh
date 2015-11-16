@@ -126,7 +126,7 @@ function wrbase() {
 function wrarmv7() {
     wrbase
     export GYP_DEFINES="$GYP_DEFINES_BASE"
-    export GYP_GENERATOR_FLAGS="output_dir=out_android_armeabi_v7a"
+    export GYP_GENERATOR_FLAGS="output_dir=out_android_armeabi-v7a"
     export GYP_CROSSCOMPILE=1
 }
 
@@ -134,7 +134,7 @@ function wrarmv7() {
 function wrarmv8() {
     wrbase
     export GYP_DEFINES="$GYP_DEFINES_BASE target_arch=arm64 target_subarch=arm64"
-    export GYP_GENERATOR_FLAGS="output_dir=out_android_arm64_v8a"
+    export GYP_GENERATOR_FLAGS="output_dir=out_android_arm64-v8a"
     export GYP_CROSSCOMPILE=1
 }
 
@@ -191,11 +191,11 @@ execute_build() {
         STRIP=$ANDROID_TOOLCHAINS/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-strip
     elif [ "$WEBRTC_ARCH" = "armv7" ] ;
     then
-        ARCH="armeabi_v7a"
+        ARCH="armeabi-v7a"
         STRIP=$ANDROID_TOOLCHAINS/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-strip
     elif [ "$WEBRTC_ARCH" = "armv8" ] ;
     then
-        ARCH="arm64_v8a"
+        ARCH="arm64-v8a"
         STRIP=$ANDROID_TOOLCHAINS/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-strip
     fi
 
