@@ -10,12 +10,14 @@ set -u
 
 BUILD=Release
 
+TARDIR=/tmp
 function usage {
   echo $1 >&2
   echo "Usage: $0" >&2
   echo "        --version|-v VERSION" >&2
   echo "        [--build Release|Debug]" >&2
   echo "        [--noupload]" >&2
+  echo "        [--output|-o OUTPUT]" >&2
 }
 
 # 0. Parse arguments
@@ -37,9 +39,17 @@ do
     --noupload)
     NOUPLOAD=YES
     ;;
+    -o)
+    TARDIR=$2
+    shift
+    ;;
+    --output)
+    TARDIR=$2
+    shift
+    ;;
     --help)
-    usage ""
-    exit 0 "Packages all debug symbols for WebRTC for Android"
+    usage "Packages all debug symbols for WebRTC for Android"
+    exit 0
     ;;
     -*)
     usage "Fatal: unknown option: $1"
@@ -75,14 +85,14 @@ for arch in "${ARCHS[@]}"; do
     mkdir -p ${SYMBOLS_OUT}
 
     pushd ${SYMBOLS_IN} >/dev/null
-    for o in `find . -name '*.o' | grep -v ./obj.host/`; do
+    for o in `find . -name '*.o'`; do
         cp --parents $o $SYMBOLS_OUT
     done
     popd >/dev/null
 done
 
 # 2. TAR
-TARFILE=/tmp/talko-webrtc-symbols-${VERSION}.tar
+TARFILE=${TARDIR}/talko-webrtc-symbols-${VERSION}.tar
 pushd ${TMP} >/dev/null
 tar -czf ${TARFILE} .
 popd >/dev/null
@@ -90,7 +100,7 @@ popd >/dev/null
 # 3. Upload
 if [ ! -z "${NOUPLOAD+x}" ]
 then
-#FIXME
+   echo "FIXME"
 else
     echo "WARNING: Skipping upload of symbols"
 fi
